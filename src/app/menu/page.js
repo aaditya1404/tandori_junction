@@ -3,6 +3,7 @@
 import { useState } from "react";
 import menuData from "@/data/menu";
 import FoodModal from "@/components/FoodModal";
+import { motion } from "framer-motion";
 
 export default function MenuPage() {
     const [search, setSearch] = useState("");
@@ -93,33 +94,48 @@ export default function MenuPage() {
                                         .includes(normalizedSearch)
                                 )
                                 .map((item) => (
-                                    <div
-                                        key={item.name}
-                                        onClick={() =>
-                                            setSelectedItem(item)
-                                        }
-                                        className="
-                                        cursor-pointer
-                      flex
-                      justify-between
-                      items-center
-                      bg-zinc-900
-                      border
-                      border-zinc-800
-                      rounded-xl
-                      p-5
-                      hover:border-orange-500
-                      transition
-                    "
-                                    >
-                                        <h3 className="text-lg font-medium">
-                                            {item.name}
-                                        </h3>
+                                     <motion.div
+  key={item.name}
+  onClick={() => setSelectedItem(item)}
+  initial={{
+    opacity: 0,
+    y: 30,
+  }}
+  whileInView={{
+    opacity: 1,
+    y: 0,
+  }}
+  viewport={{
+    once: true,
+  }}
+  whileHover={{
+    scale: 1.02,
+    y: -5,
+  }}
+  transition={{
+    duration: 0.3,
+  }}
+  className="
+    cursor-pointer
+    flex
+    justify-between
+    items-center
+    bg-zinc-900
+    border
+    border-zinc-800
+    rounded-xl
+    p-5
+    hover:border-orange-500
+  "
+>
+  <h3 className="text-lg font-medium">
+    {item.name}
+  </h3>
 
-                                        <span className="text-orange-500 font-bold">
-                                            ₹{item.price}
-                                        </span>
-                                    </div>
+  <span className="text-orange-500 font-bold">
+    ₹{item.price}
+  </span>
+</motion.div>
                                 ))}
 
                         </div>
