@@ -3,17 +3,29 @@
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function CheckoutPage() {
   const { cart } = useCart();
 const router = useRouter();
+const searchParams = useSearchParams();
+
+const orderId =
+  searchParams.get("orderId");
   const [form, setForm] = useState({
     name: "",
     phone: "",
     address: "",
     payment: "cod",
   });
+const handlePlaceOrder = () => {
+  const orderId =
+    "TJ" + Math.floor(Math.random() * 100000);
 
+  router.push(
+    `/order-success?orderId=${orderId}`
+  );
+};
   const total = cart.reduce(
     (sum, item) =>
       sum + item.price * item.quantity,
@@ -165,18 +177,18 @@ const router = useRouter();
 
             </div>
 
-            <button
-              type="submit"
-              className="
-              w-full
-              bg-orange-500
-              py-4
-              rounded-xl
-              font-bold
-              "
-            >
-              Place Order
-            </button>
+           <button
+  onClick={handlePlaceOrder}
+  className="
+  w-full
+  bg-orange-500
+  py-4
+  rounded-xl
+  font-bold
+  "
+>
+  Place Order
+</button>
 
           </form>
 
