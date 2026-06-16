@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSelector } from "react-redux";
 
 export default function AdminDashboard() {
@@ -44,6 +45,15 @@ export default function AdminDashboard() {
           <p className="text-4xl font-bold mt-3">
             0
           </p>
+        </div>
+
+        <div className="mt-10">
+          <Link
+            href="/admin/menu"
+            className="inline-block bg-orange-500 hover:bg-orange-600 transition px-6 py-3 rounded-lg font-medium"
+          >
+            View All Menu
+          </Link>
         </div>
       </div>
     </div>
