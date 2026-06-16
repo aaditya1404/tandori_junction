@@ -13,7 +13,10 @@ import {
 } from "@/services/authService";    
 
 export default function AddressesPage() {
+    isDefault: true
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] =
+  useState(null);
 
   const [formData, setFormData] = useState({
     label: "",
@@ -29,7 +32,48 @@ export default function AddressesPage() {
 
   const [addresses, setAddresses] = useState([]);
 
+const handleDelete = async (
+  addressId
+) => {
+  const user = getCurrentUser();
 
+  if (!user) return;
+
+  const confirmDelete =
+    window.confirm(
+      "Delete this address?"
+    );
+
+  if (!confirmDelete) return;
+
+  const result =
+    await deleteAddress(
+      user.uid,
+      addressId
+    );
+
+  if (result.success) {
+    await loadAddresses();
+  }
+};
+
+const handleEdit = (address) => {
+  setEditingId(address.id);
+
+  setFormData({
+    label: address.label,
+    fullName: address.fullName,
+    phone: address.phone,
+    address: address.address,
+    city: address.city,
+    state: address.state,
+    pincode: address.pincode,
+    latitude: address.latitude,
+    longitude: address.longitude,
+  });
+
+  setShowForm(true);
+};
 const loadAddresses = async () => {
   const user = getCurrentUser();
 
@@ -114,6 +158,7 @@ useEffect(() => {
   }
 const alreadyExists = addresses.some(
   (address) =>
+    address.id !== editingId &&
     Number(address.latitude).toFixed(5) ===
       Number(formData.latitude).toFixed(5) &&
     Number(address.longitude).toFixed(5) ===
@@ -124,10 +169,38 @@ if (alreadyExists) {
   alert("This address is already saved");
   return;
 }
-  const result = await saveAddress(
-    user.uid,
-    formData
-  );
+  if (editingId) {
+
+  const result =
+    await updateAddress(
+      user.uid,
+      editingId,
+      formData
+    );
+
+  if (result.success) {
+    await loadAddresses();
+
+    setEditingId(null);
+
+    setShowForm(false);
+  }
+
+} else {
+
+  const result =
+    await saveAddress(
+      user.uid,
+      formData
+    );
+
+  if (result.success) {
+    await loadAddresses();
+
+    setShowForm(false);
+  }
+
+}
 
  if (result.success) {
   alert("Address Saved Successfully");
@@ -426,6 +499,38 @@ if (alreadyExists) {
                 {address.city}, {address.state} -{" "}
                 {address.pincode}
               </p>
+            <div className="mt-4 flex gap-3">
+
+  <button
+    onClick={() =>
+      handleDelete(address.id)
+    }
+    className="
+    bg-red-500
+    hover:bg-red-600
+    px-4
+    py-2
+    rounded-lg
+    "
+  >
+    Delete
+  </button>
+  <button
+  onClick={() =>
+    handleEdit(address)
+  }
+  className="
+  bg-blue-500
+  hover:bg-blue-600
+  px-4
+  py-2
+  rounded-lg
+  "
+>
+  Edit
+</button>
+
+</div>
 
               {address.latitude && (
                 <div className="mt-5 flex gap-3">

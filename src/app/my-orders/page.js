@@ -1,28 +1,69 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+import {
+  observeAuthState,
+} from "@/services/authService";
+
+import {
+  getUserOrders,
+} from "@/services/orderService";
 
 export default function MyOrdersPage() {
-  const orders = [
-    {
-      id: "TJ1034",
-      total: 540,
-      status: "Preparing",
-      date: "15 Jun 2025",
-    },
-    {
-      id: "TJ1033",
-      total: 320,
-      status: "Delivered",
-      date: "12 Jun 2025",
-    },
-  ];
+
+  const [orders, setOrders] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  useEffect(() => {
+
+    const unsubscribe =
+      observeAuthState(
+        async (user) => {
+
+          if (!user) {
+            setLoading(false);
+            return;
+          }
+
+          const result =
+            await getUserOrders(
+              user.uid
+            );
+
+          if (result.success) {
+            setOrders(
+              result.orders
+            );
+          }
+
+          setLoading(false);
+
+        }
+      );
+
+    return () => unsubscribe();
+
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        Loading Orders...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
 
       {/* Header */}
       <div className="border-b border-zinc-800 py-16">
+
         <div className="max-w-6xl mx-auto px-6">
 
           <h1 className="text-5xl font-bold">
@@ -34,93 +75,181 @@ export default function MyOrdersPage() {
           </p>
 
         </div>
+
       </div>
 
       {/* Orders */}
       <div className="max-w-6xl mx-auto px-6 py-12">
 
-        <div className="space-y-6">
+        {orders.length === 0 ? (
 
-          {orders.map((order) => (
-            <div
-              key={order.id}
-              className="
-              bg-zinc-900
-              border
-              border-zinc-800
-              rounded-2xl
-              p-6
-              "
-            >
-              <div className="flex justify-between items-center flex-wrap gap-4">
+          <div
+            className="
+            bg-zinc-900
+            border
+            border-zinc-800
+            rounded-2xl
+            p-10
+            text-center
+            "
+          >
+            No Orders Yet
+          </div>
 
-                <div>
-                  <h2 className="text-2xl font-bold">
-                    #{order.id}
-                  </h2>
+        ) : (
 
-                  <p className="text-zinc-400 mt-1">
-                    {order.date}
-                  </p>
+          <div className="space-y-6">
+
+            {orders.map((order) => (
+
+              <div
+                key={order.id}
+                className="
+                bg-zinc-900
+                border
+                border-zinc-800
+                rounded-2xl
+                p-6
+                "
+              >
+
+                <div className="flex justify-between items-center flex-wrap gap-4">
+
+                  <div>
+
+                    <h2 className="text-2xl font-bold">
+                      #{order.id}
+                    </h2>
+
+                    <p className="text-zinc-400 mt-1">
+
+                      {order.createdAt?.seconds
+                        ? new Date(
+                            order.createdAt.seconds *
+                            1000
+                          ).toLocaleDateString()
+                        : "N/A"}
+
+                    </p>
+
+                  </div>
+
+                  <div>
+
+                    <p className="text-orange-500 text-xl font-bold">
+                      ₹{order.total}
+                    </p>
+
+                  </div>
+
+                  <div>
+
+                    <span
+                      className={`
+                      px-4
+                      py-2
+                      rounded-full
+                      text-sm
+
+                      ${
+                        order.status ===
+                        "delivered"
+                          ? "bg-green-500"
+                          : order.status ===
+                            "out_for_delivery"
+                          ? "bg-purple-500"
+                          : order.status ===
+                            "preparing"
+                          ? "bg-blue-500"
+                          : "bg-orange-500"
+                      }
+                    `}
+                    >
+                      {order.status}
+                    </span>
+
+                  </div>
+
                 </div>
 
-                <div>
-                  <p className="text-orange-500 text-xl font-bold">
-                    ₹{order.total}
-                  </p>
+                {/* Items */}
+
+                <div className="mt-6">
+
+                  <h3 className="font-semibold mb-3">
+                    Ordered Items
+                  </h3>
+
+                  <div className="space-y-2">
+
+                    {order.items?.map(
+                      (item) => (
+
+                        <div
+                          key={item.name}
+                          className="
+                          flex
+                          justify-between
+                          "
+                        >
+
+                          <span>
+                            {item.name}
+                            {" × "}
+                            {item.quantity}
+                          </span>
+
+                          <span>
+                            ₹
+                            {item.price *
+                              item.quantity}
+                          </span>
+
+                        </div>
+
+                      )
+                    )}
+
+                  </div>
+
                 </div>
 
-                <div>
-                  <span
-                    className={`
-                    px-4
+                {/* Buttons */}
+
+                <div className="mt-6 flex gap-4">
+
+                  <Link
+                    href={`/track-order/${order.id}`}
+                    className="
+                    bg-orange-500
+                    px-5
                     py-2
-                    rounded-full
-                    text-sm
-
-                    ${
-                      order.status === "Delivered"
-                        ? "bg-green-500"
-                        : "bg-orange-500"
-                    }
-                  `}
+                    rounded-xl
+                    "
                   >
-                    {order.status}
-                  </span>
+                    Track Order
+                  </Link>
+
+                  <button
+                    className="
+                    bg-zinc-800
+                    px-5
+                    py-2
+                    rounded-xl
+                    "
+                  >
+                    Reorder
+                  </button>
+
                 </div>
 
               </div>
 
-              <div className="mt-6 flex gap-4">
+            ))}
 
-                <Link
-                  href={`/track-order?id=${order.id}`}
-                  className="
-                  bg-orange-500
-                  px-5
-                  py-2
-                  rounded-xl
-                  "
-                >
-                  Track Order
-                </Link>
+          </div>
 
-                <button
-                  className="
-                  bg-zinc-800
-                  px-5
-                  py-2
-                  rounded-xl
-                  "
-                >
-                  Reorder
-                </button>
-
-              </div>
-            </div>
-          ))}
-
-        </div>
+        )}
 
       </div>
 

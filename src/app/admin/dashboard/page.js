@@ -48,12 +48,41 @@ export default function AdminDashboard() {
         </div>
 
         <div className="mt-10">
-          <Link
-            href="/admin/menu"
-            className="inline-block bg-orange-500 hover:bg-orange-600 transition px-6 py-3 rounded-lg font-medium"
-          >
-            View All Menu
-          </Link>
+         <div className="mt-10 flex gap-4">
+
+  <Link
+    href="/admin/menu"
+    className="
+    inline-block
+    bg-orange-500
+    hover:bg-orange-600
+    transition
+    px-6
+    py-3
+    rounded-lg
+    font-medium
+    "
+  >
+    View All Menu
+  </Link>
+
+  <Link
+    href="/admin/orders"
+    className="
+    inline-block
+    bg-blue-500
+    hover:bg-blue-600
+    transition
+    px-6
+    py-3
+    rounded-lg
+    font-medium
+    "
+  >
+    View Orders
+  </Link>
+
+</div>
         </div>
       </div>
     </div>

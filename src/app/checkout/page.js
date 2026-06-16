@@ -4,6 +4,12 @@ import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { createOrder }
+from "@/services/orderService";
+
+import {
+  getCurrentUser,
+} from "@/services/authService";
 
 export default function CheckoutPage() {
   const { cart } = useCart();
@@ -18,31 +24,53 @@ const orderId =
     address: "",
     payment: "cod",
   });
-const handlePlaceOrder = () => {
-  const orderId =
-    "TJ" + Math.floor(Math.random() * 100000);
 
-  router.push(
-    `/order-success?orderId=${orderId}`
-  );
-};
   const total = cart.reduce(
     (sum, item) =>
       sum + item.price * item.quantity,
     0
   );
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    console.log({
-      customer: form,
+  const user = getCurrentUser();
+
+  if (!user) {
+    alert("Please login first");
+    return;
+  }
+
+  const result =
+    await createOrder({
+      userId: user.uid,
+
+      customerName: form.name,
+
+      phone: form.phone,
+
+      address: form.address,
+
+      paymentMethod:
+        form.payment,
+
       items: cart,
+
       total,
     });
 
-   router.push("/order-success");
-  };
+  if (result.success) {
+
+    router.push(
+      `/order-success?orderId=${result.orderId}`
+    );
+
+  } else {
+
+    alert(result.error);
+
+  }
+};
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -177,8 +205,8 @@ const handlePlaceOrder = () => {
 
             </div>
 
-           <button
-  onClick={handlePlaceOrder}
+ <button
+  type="submit"
   className="
   w-full
   bg-orange-500
