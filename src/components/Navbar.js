@@ -3,9 +3,41 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useCart } from "@/context/CartContext";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const pathname = usePathname();
+
+  const {
+    totalCartItems,
+    setCartOpen,
+  } = useCart();
+
+  const navLinks = [
+    {
+      name: "Home",
+      href: "/",
+    },
+    {
+      name: "Menu",
+      href: "/menu",
+    },
+    {
+      name: "Gallery",
+      href: "/gallery",
+    },
+    {
+      name: "About",
+      href: "/about",
+    },
+    {
+      name: "Contact",
+      href: "/contact",
+    },
+  ];
 
   return (
     <nav className="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-zinc-800">
@@ -20,70 +52,56 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Menu */}
-        <ul className="hidden md:flex items-center gap-8 text-white">
-          <li>
+        <div className="hidden md:flex items-center gap-8">
+
+          {navLinks.map((link) => (
             <Link
-              href="/"
-              className="hover:text-orange-500 transition"
+              key={link.href}
+              href={link.href}
+              className={`transition ${
+                pathname === link.href
+                  ? "text-orange-500"
+                  : "text-white hover:text-orange-500"
+              }`}
             >
-              Home
+              {link.name}
             </Link>
-          </li>
+          ))}
 
-          <li>
-            <Link
-              href="/menu"
-              className="hover:text-orange-500 transition"
-            >
-              Menu
-            </Link>
-          </li>
+          {/* Cart */}
+          <button
+            onClick={() => setCartOpen(true)}
+            className="relative cursor-pointer"
+          >
+            <span className="text-2xl">
+              🛒
+            </span>
 
-          <li>
-            <Link
-              href="/gallery"
-              className="hover:text-orange-500 transition"
-            >
-              Gallery
-            </Link>
-          </li>
+            {totalCartItems > 0 && (
+              <span
+                className="
+                absolute
+                -top-2
+                -right-2
+                bg-orange-500
+                text-white
+                text-xs
+                w-5
+                h-5
+                rounded-full
+                flex
+                items-center
+                justify-center
+                "
+              >
+                {totalCartItems}
+              </span>
+            )}
+          </button>
 
-          <li>
-            <Link
-              href="/about"
-              className="hover:text-orange-500 transition"
-            >
-              About
-            </Link>
-          </li>
+        </div>
 
-          <li>
-            <Link
-              href="/contact"
-              className="hover:text-orange-500 transition"
-            >
-              Contact
-            </Link>
-          </li>
-        </ul>
-
-        {/* Order Button */}
-        <button
-          className="
-          hidden md:block
-          bg-orange-500
-          px-5
-          py-2
-          rounded-lg
-          text-white
-          hover:bg-orange-600
-          transition
-          "
-        >
-          Order Now
-        </button>
-
-        {/* Mobile Button */}
+        {/* Mobile Menu Button */}
         <button
           className="md:hidden text-white"
           onClick={() =>
@@ -96,22 +114,61 @@ export default function Navbar() {
             <Menu size={28} />
           )}
         </button>
+
       </div>
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-zinc-900 text-white">
-          <div className="flex flex-col p-6 gap-4">
+        <div className="md:hidden bg-zinc-900 border-t border-zinc-800">
+          <div className="flex flex-col p-6 gap-5">
 
-            <Link href="/">Home</Link>
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() =>
+                  setIsOpen(false)
+                }
+                className={`${
+                  pathname === link.href
+                    ? "text-orange-500"
+                    : "text-white"
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
 
-            <Link href="/menu">Menu</Link>
+            {/* Mobile Cart */}
+            <button
+              onClick={() => {
+                setCartOpen(true);
+                setIsOpen(false);
+              }}
+              className="
+              flex
+              items-center
+              gap-3
+              text-white
+              "
+            >
+              <span>🛒 Cart</span>
 
-            <Link href="/gallery">Gallery</Link>
-
-            <Link href="/about">About</Link>
-
-            <Link href="/contact">Contact</Link>
+              {totalCartItems > 0 && (
+                <span
+                  className="
+                  bg-orange-500
+                  text-white
+                  text-xs
+                  px-2
+                  py-1
+                  rounded-full
+                  "
+                >
+                  {totalCartItems}
+                </span>
+              )}
+            </button>
 
           </div>
         </div>
