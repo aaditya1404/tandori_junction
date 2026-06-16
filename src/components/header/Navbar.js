@@ -12,13 +12,13 @@ export default function Navbar() {
 
   const user = useSelector((state) => state.auth.user);
   const [showProfileMenu, setShowProfileMenu] =
-  useState(false);
+    useState(false);
   const {
-  totalCartItems,
-  setCartOpen,
-} = useCart();
-const [notificationOpen, setNotificationOpen] =
-  useState(false);
+    totalCartItems,
+    setCartOpen,
+  } = useCart();
+  const [notificationOpen, setNotificationOpen] =
+    useState(false);
 
   const handleLogin = async () => {
     const result = await signInWithGoogle();
@@ -34,77 +34,77 @@ const [notificationOpen, setNotificationOpen] =
 
   return (
     <>
-    <nav className="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-zinc-800">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <nav className="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-zinc-800">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
 
-        {/* Logo */}
-        <Link
-          href="/"
-          className="text-2xl font-bold text-orange-500"
-        >
-          Tandoori Junction
-        </Link>
+          {/* Logo */}
+          <Link
+            href="/"
+            className="text-2xl font-bold text-orange-500"
+          >
+            Tandoori Junction
+          </Link>
 
-        {/* Desktop Menu */}
-        <ul className="hidden md:flex items-center gap-8 text-white">
-          <li>
-            <Link
-              href="/"
-              className="hover:text-orange-500 transition"
-            >
-              Home
-            </Link>
-          </li>
+          {/* Desktop Menu */}
+          <ul className="hidden md:flex items-center gap-8 text-white">
+            <li>
+              <Link
+                href="/"
+                className="hover:text-orange-500 transition"
+              >
+                Home
+              </Link>
+            </li>
 
-          <li>
-            <Link
-              href="/menu"
-              className="hover:text-orange-500 transition"
-            >
-              Menu
-            </Link>
-          </li>
+            <li>
+              <Link
+                href="/menu"
+                className="hover:text-orange-500 transition"
+              >
+                Menu
+              </Link>
+            </li>
 
-          <li>
-            <Link
-              href="/gallery"
-              className="hover:text-orange-500 transition"
-            >
-              Gallery
-            </Link>
-          </li>
+            <li>
+              <Link
+                href="/gallery"
+                className="hover:text-orange-500 transition"
+              >
+                Gallery
+              </Link>
+            </li>
 
-          <li>
-            <Link
-              href="/about"
-              className="hover:text-orange-500 transition"
-            >
-              About
-            </Link>
-          </li>
+            <li>
+              <Link
+                href="/about"
+                className="hover:text-orange-500 transition"
+              >
+                About
+              </Link>
+            </li>
 
-          <li>
-            <Link
-              href="/contact"
-              className="hover:text-orange-500 transition"
-            >
-              Contact
-            </Link>
-          </li>
-        </ul>
+            <li>
+              <Link
+                href="/contact"
+                className="hover:text-orange-500 transition"
+              >
+                Contact
+              </Link>
+            </li>
+          </ul>
 
-       {user ? (
-  <div className="relative hidden md:flex items-center gap-4">
-            <button
-  onClick={() =>
-    setNotificationOpen(true)
-  }
-  className="relative text-2xl"
->
-  🔔
+          {user ? (
+            <div className="relative hidden md:flex items-center gap-4">
+              <button
+                onClick={() =>
+                  setNotificationOpen(true)
+                }
+                className="relative text-2xl"
+              >
+                🔔
 
-  <span
-    className="
+                <span
+                  className="
     absolute
     -top-1
     -right-1
@@ -113,29 +113,29 @@ const [notificationOpen, setNotificationOpen] =
     h-4
     rounded-full
     "
-  />
-</button>
-            <Image
-  src={user?.photoURL}
-  alt="Profile"
-  height={50}
-  width={50}
-  onClick={() =>
-    setShowProfileMenu(
-      !showProfileMenu
-    )
-  }
-  className="
+                />
+              </button>
+              <Image
+                src={user?.photoURL || "/images/user/user.png"}
+                alt="Profile"
+                height={50}
+                width={50}
+                onClick={() =>
+                  setShowProfileMenu(
+                    !showProfileMenu
+                  )
+                }
+                className="
   rounded-full
   cursor-pointer
   border-2
   border-orange-500
   "
-/>
+              />
 
-{showProfileMenu && (
-  <div
-    className="
+              {showProfileMenu && (
+                <div
+                  className="
     absolute
     top-16
     right-0
@@ -147,85 +147,85 @@ const [notificationOpen, setNotificationOpen] =
     shadow-xl
     overflow-hidden
     "
-  >
-    <div className="p-4 border-b border-zinc-800">
+                >
+                  <div className="p-4 border-b border-zinc-800">
 
-      <h3 className="font-semibold">
-        {user?.displayName}
-      </h3>
+                    <h3 className="font-semibold">
+                      {user?.displayName}
+                    </h3>
 
-      <p className="text-sm text-zinc-400">
-        {user?.email}
-      </p>
+                    <p className="text-sm text-zinc-400">
+                      {user?.email}
+                    </p>
 
-    </div>
+                  </div>
 
-    <Link
-      href="/my-orders"
-      className="
+                  <Link
+                    href="/my-orders"
+                    className="
       block
       px-4
       py-3
       hover:bg-zinc-800
       "
-    >
-      📦 My Orders
-    </Link>
+                  >
+                    📦 My Orders
+                  </Link>
 
-   <Link
-  href="/profile"
-  className="
+                  <Link
+                    href="/profile"
+                    className="
   block
   px-4
   py-3
   hover:bg-zinc-800
   "
->
-  👤 Profile
-</Link>
+                  >
+                    👤 Profile
+                  </Link>
 
-    <button
-      onClick={() => setCartOpen(true)}
-      className="
+                  <button
+                    onClick={() => setCartOpen(true)}
+                    className="
       w-full
       text-left
       px-4
       py-3
       hover:bg-zinc-800
       "
-    >
-      🛒 Open Cart
-    </button>
+                  >
+                    🛒 Open Cart
+                  </button>
 
 
-  </div>
-)}
+                </div>
+              )}
 
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 px-4 py-2 rounded-lg text-white"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
             <button
-              onClick={handleLogout}
-              className="bg-red-500 px-4 py-2 rounded-lg text-white"
+              onClick={handleLogin}
+              className="bg-orange-500 px-5 py-2 rounded-lg text-white"
             >
-              Logout
+              Login
             </button>
-          </div>
-        ) : (
-          <button
-            onClick={handleLogin}
-            className="bg-orange-500 px-5 py-2 rounded-lg text-white"
-          >
-            Login
-          </button>
-        )}
+          )}
 
-      </div>
-      
-    </nav>
-    <NotificationDrawer
-  open={notificationOpen}
-  onClose={() =>
-    setNotificationOpen(false)
-  }
-/>
-</>
+        </div>
+
+      </nav>
+      <NotificationDrawer
+        open={notificationOpen}
+        onClose={() =>
+          setNotificationOpen(false)
+        }
+      />
+    </>
   );
 }
