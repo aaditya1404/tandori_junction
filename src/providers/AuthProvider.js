@@ -9,42 +9,49 @@ import { observeAuthState } from "@/services/authService";
 import { setUser, clearUser } from "@/redux/slices/authSlice";
 
 export default function AuthProvider({ children }) {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  useEffect(() => {
-    const unsubscribe = observeAuthState(async (firebaseUser) => {
-      if (!firebaseUser) {
-        dispatch(clearUser());
-        return;
-      }
+    useEffect(() => {
+        const unsubscribe = observeAuthState(async (firebaseUser) => {
+            if (!firebaseUser) {
+                dispatch(clearUser());
+                return;
+            }
 
-      try {
-        const userRef = doc(db, "users", firebaseUser.uid);
-        const userSnap = await getDoc(userRef);
+            try {
+                const userRef = doc(db, "users", firebaseUser.uid);
+                const userSnap = await getDoc(userRef);
+                const userData = userSnap.exists() ? userSnap.data() : {};
 
-        if (userSnap.exists()) {
-          dispatch(
-            setUser({
-              firebaseUser,
-              profile: userSnap.data(),
-            })
-          );
-        } else {
-          dispatch(
-            setUser({
-              firebaseUser,
-              profile: null,
-            })
-          );
-        }
-      } catch (error) {
-        console.error(error);
-        dispatch(clearUser());
-      }
-    });
+                if (userSnap.exists()) {
+                    dispatch(
+                        setUser({
+                            uid: firebaseUser.uid,
+                            name: firebaseUser.displayName,
+                            email: firebaseUser.email,
+                            photoURL: firebaseUser.photoURL,
+                            role: userData.role || "user",
+                        })
+                    );
+                } else {
+                    dispatch(
+                        setUser({
+                            uid: firebaseUser.uid,
+                            name: firebaseUser.displayName,
+                            email: firebaseUser.email,
+                            photoURL: firebaseUser.photoURL,
+                            role: userData.role || "user",
+                        })
+                    );
+                }
+            } catch (error) {
+                console.error(error);
+                dispatch(clearUser());
+            }
+        });
 
-    return () => unsubscribe();
-  }, [dispatch]);
+        return () => unsubscribe();
+    }, [dispatch]);
 
-  return children;
+    return children;
 }

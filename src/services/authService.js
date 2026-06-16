@@ -8,8 +8,7 @@ import {
 import {
   doc,
   getDoc,
-  setDoc,
-  serverTimestamp,
+  setDoc
 } from "firebase/firestore";
 
 const provider = new GoogleAuthProvider();
@@ -34,8 +33,7 @@ export const signInWithGoogle = async () => {
         name: user.displayName || "",
         email: user.email || "",
         photoURL: user.photoURL || "",
-        role: "user",
-        createdAt: serverTimestamp(),
+        role: "user"
       });
     }
 
