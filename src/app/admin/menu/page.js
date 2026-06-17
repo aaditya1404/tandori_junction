@@ -9,6 +9,9 @@ import { setMenuItems } from "@/redux/slices/menuSlice";
 
 import { deleteMenuItem } from "@/redux/slices/menuSlice";
 import { deleteMenuItemFromFirestore } from "@/services/menuService";
+import {
+  updateAvailability,
+} from "@/services/menuService";
 
 export default function MenuManagementPage() {
     const dispatch = useDispatch();
@@ -47,7 +50,41 @@ export default function MenuManagementPage() {
 
         alert("Menu item deleted successfully!");
     };
+const handleAvailability =
+  async (
+    id,
+    currentStatus
+  ) => {
 
+  const result =
+    await updateAvailability(
+      id,
+      !currentStatus
+    );
+
+  if (!result.success) {
+
+    alert(result.error);
+    return;
+
+  }
+
+  const updatedMenu =
+    await getAllMenuItems();
+
+  if (
+    updatedMenu.success
+  ) {
+
+    dispatch(
+      setMenuItems(
+        updatedMenu.data
+      )
+    );
+
+  }
+
+};
     return (
         <div className="min-h-screen bg-zinc-900 text-white p-8">
             <div className="flex justify-between mb-8">
@@ -102,14 +139,62 @@ export default function MenuManagementPage() {
                                 {item.isAvailable ? "✅" : "❌"}
                             </td>
 
-                            <td className="p-3">
-                                <button
-                                    onClick={() => handleDelete(item.id)}
-                                    className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg"
-                                >
-                                    Delete
-                                </button>
-                            </td>
+                          <td className="p-3 flex gap-2">
+
+  <Link
+  href={`/admin/menu/edit/${item.id}`}
+  onClick={() =>
+    console.log(
+      "Edit clicked:",
+      item.id
+    )
+  }
+  className="
+  bg-blue-500
+  px-4
+  py-2
+  rounded-lg
+  "
+>
+  Edit
+</Link>
+
+  <button
+    onClick={() =>
+      handleAvailability(
+        item.id,
+        item.isAvailable
+      )
+    }
+    className={
+      item.isAvailable
+        ? "bg-yellow-500 px-4 py-2 rounded-lg"
+        : "bg-green-500 px-4 py-2 rounded-lg"
+    }
+  >
+    {
+      item.isAvailable
+        ? "Make Unavailable"
+        : "Make Available"
+    }
+  </button>
+
+  <button
+    onClick={() =>
+      handleDelete(item.id)
+    }
+    className="
+    bg-red-500
+    hover:bg-red-600
+    px-4
+    py-2
+    rounded-lg
+    "
+  >
+    Delete
+  </button>
+
+</td>
                         </tr>
                     ))}
                 </tbody>

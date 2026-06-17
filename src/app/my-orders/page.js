@@ -8,7 +8,7 @@ import {
 } from "@/services/authService";
 
 import {
-  getUserOrders,
+  subscribeToUserOrders,
 } from "@/services/orderService";
 
 export default function MyOrdersPage() {
@@ -21,47 +21,68 @@ export default function MyOrdersPage() {
 
   useEffect(() => {
 
-    const unsubscribe =
+    let unsubscribeOrders;
+
+    const unsubscribeAuth =
       observeAuthState(
-        async (user) => {
+        (user) => {
 
           if (!user) {
+
             setLoading(false);
             return;
+
           }
 
-          const result =
-            await getUserOrders(
-              user.uid
-            );
+          unsubscribeOrders =
+            subscribeToUserOrders(
+              user.uid,
 
-          if (result.success) {
-            setOrders(
-              result.orders
-            );
-          }
+              (orders) => {
 
-          setLoading(false);
+                setOrders(
+                  orders
+                );
+
+                setLoading(
+                  false
+                );
+
+              }
+            );
 
         }
       );
 
-    return () => unsubscribe();
+    return () => {
+
+      unsubscribeAuth();
+
+      if (
+        unsubscribeOrders
+      ) {
+
+        unsubscribeOrders();
+
+      }
+
+    };
 
   }, []);
 
   if (loading) {
+
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         Loading Orders...
       </div>
     );
+
   }
 
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* Header */}
       <div className="border-b border-zinc-800 py-16">
 
         <div className="max-w-6xl mx-auto px-6">
@@ -78,7 +99,6 @@ export default function MyOrdersPage() {
 
       </div>
 
-      {/* Orders */}
       <div className="max-w-6xl mx-auto px-6 py-12">
 
         {orders.length === 0 ? (
@@ -127,7 +147,7 @@ export default function MyOrdersPage() {
                         ? new Date(
                             order.createdAt.seconds *
                             1000
-                          ).toLocaleDateString()
+                          ).toLocaleString()
                         : "N/A"}
 
                     </p>
@@ -172,8 +192,6 @@ export default function MyOrdersPage() {
 
                 </div>
 
-                {/* Items */}
-
                 <div className="mt-6">
 
                   <h3 className="font-semibold mb-3">
@@ -213,8 +231,6 @@ export default function MyOrdersPage() {
                   </div>
 
                 </div>
-
-                {/* Buttons */}
 
                 <div className="mt-6 flex gap-4">
 

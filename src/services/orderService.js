@@ -9,6 +9,7 @@ import {
   query,
   where,
   getDocs,
+  getDoc,
   
 } from "firebase/firestore";
 import {
@@ -17,18 +18,31 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
+import {
+  onSnapshot,
+} from "firebase/firestore";
 export const createOrder = async (
   orderData
 ) => {
   try {
     const docRef = await addDoc(
-      collection(db, "orders"),
-      {
-        ...orderData,
-        status: "pending",
-        createdAt: serverTimestamp(),
-      }
-    );
+  collection(db, "orders"),
+  {
+    ...orderData,
+
+    status: "pending",
+
+    createdAt: serverTimestamp(),
+
+    orderDate:
+      new Date()
+        .toLocaleDateString(),
+
+    orderTime:
+      new Date()
+        .toLocaleTimeString(),
+  }
+);
 
     return {
       success: true,
@@ -144,5 +158,93 @@ export const updateOrderStatus =
     };
 
   }
+
+};
+export const getOrderById =
+  async (orderId) => {
+
+  try {
+
+    const snapshot =
+      await getDoc(
+        doc(
+          db,
+          "orders",
+          orderId
+        )
+      );
+
+    if (!snapshot.exists()) {
+
+      return {
+        success: false,
+        error: "Order not found",
+      };
+
+    }
+
+    return {
+      success: true,
+      order: {
+        id: snapshot.id,
+        ...snapshot.data(),
+      },
+    };
+
+  } catch (error) {
+
+    return {
+      success: false,
+      error: error.message,
+    };
+
+  }
+
+};
+export const subscribeToOrder =
+  (orderId, callback) => {
+
+  return onSnapshot(
+    doc(db, "orders", orderId),
+
+    (snapshot) => {
+
+      if (snapshot.exists()) {
+
+        callback({
+          id: snapshot.id,
+          ...snapshot.data(),
+        });
+
+      }
+
+    }
+  );
+
+};
+export const subscribeToUserOrders =
+  (userId, callback) => {
+
+  const q = query(
+    collection(db, "orders"),
+    where("userId", "==", userId)
+  );
+
+  return onSnapshot(
+    q,
+    (snapshot) => {
+
+      const orders =
+        snapshot.docs.map(
+          (doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })
+        );
+
+      callback(orders);
+
+    }
+  );
 
 };

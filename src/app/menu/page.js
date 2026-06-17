@@ -3,11 +3,16 @@
 
 "use client";
 
-import { useState } from "react";
+//import { useState } from "react";
 import { motion } from "framer-motion";
-import menuData from "@/data/menu";
+//import menuData from "@/data/menu";
 import FoodModal from "@/components/FoodModal";
 import { useCart } from "@/context/CartContext";
+import { useState, useEffect } from "react";
+
+import {
+  subscribeToMenu,
+} from "@/services/menuService";
 
 
 export default function MenuPage() {
@@ -16,19 +21,36 @@ export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState("");
   const [foodFilter, setFoodFilter] = useState("all");
   const { addToCart } = useCart();
+  const [menuItems, setMenuItems] =
+  useState([]);
 
   const normalizedSearch = search.trim().toLowerCase();
 
-  const filteredCategories = menuData.filter((category) =>
-    category.children?.some((item) =>
-      item.name.toLowerCase().includes(normalizedSearch)
-    )
+ const filteredItems =
+  menuItems.filter((item) =>
+    item.name
+      .toLowerCase()
+      .includes(normalizedSearch)
   );
+useEffect(() => {
 
-  const totalItems = menuData.reduce(
-    (acc, category) => acc + category.children.length,
-    0
-  );
+  const unsubscribe =
+    subscribeToMenu(
+      (items) => {
+
+        setMenuItems(
+          items
+        );
+
+      }
+    );
+
+  return () =>
+    unsubscribe();
+
+}, []);
+  const totalItems =
+  menuItems.length;
 
   return (
     <div
@@ -53,7 +75,14 @@ export default function MenuPage() {
         <div className="flex justify-center gap-10 mt-8">
           <div>
             <p className="text-2xl font-bold text-orange-500">
-              {menuData.length}
+             {
+  [...new Set(
+    menuItems.map(
+      (item) =>
+        item.category
+    )
+  )].length
+}
             </p>
             <p className="text-zinc-400 text-sm">
               Categories
@@ -399,298 +428,157 @@ export default function MenuPage() {
           border-zinc-800
           "
         >
-          {menuData.map((category) => (
-            <motion.button
-              key={category.name}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                setActiveCategory(category.name);
-
-                document
-                  .getElementById(
-                    category.name.replace(/\s+/g, "-")
-                  )
-                  ?.scrollIntoView({
-                    behavior: "smooth",
-                  });
-              }}
-              className={`
-                px-4
-                py-2
-                rounded-full
-                border
-                transition
-
-                ${
-                  activeCategory === category.name
-                    ? "bg-orange-500 border-orange-500 text-white"
-                    : "bg-zinc-900 border-zinc-800 text-white"
-                }
-              `}
-            >
-              {category.name}
-            </motion.button>
-          ))}
+         {
+  [...new Set(
+    menuItems.map(
+      (item) =>
+        item.category
+    )
+  )].map(
+    (category) => (
+      <button
+        key={category}
+        onClick={() =>
+          setActiveCategory(
+            category
+          )
+        }
+      >
+        {category}
+      </button>
+    )
+  )
+}
         </div>
 
-        {/* Categories */}
-        {filteredCategories.map((category) => (
-          <div
-            id={category.name.replace(/\s+/g, "-")}
-            key={category.name}
-            className="mb-20"
-          ><motion.h2
-  initial={{
-    opacity: 0,
-    y: 20,
-  }}
-  whileInView={{
-    opacity: 1,
-    y: 0,
-  }}
-  transition={{
-    duration: 0.4,
-  }}    
-              viewport={{
-                once: true,
-              }}
-              className="
-                text-4xl
-                font-bold
-                text-orange-500
-                mb-3
-              "
-            >
-              {category.name}
+       
+         
+        {[...new Set(
+  filteredItems.map(
+    (item) =>
+      item.category
+  )
+)].map((category) => (
 
-              <span
-                className="
-                ml-3
-                text-sm
-                bg-orange-500
-                px-3
-                py-1
-                rounded-full
-                text-white
-                align-middle
-                "
-              >
-                {
-  category.children.filter((item) =>
-    foodFilter === "all"
-      ? true
-      : item.type === foodFilter
-  ).length
-}
-              </span>
-            </motion.h2>
+  <div
+    key={category}
+    className="mb-20"
+  >
 
-            <div className="w-24 h-1 bg-orange-500 rounded-full mb-8" />
+    <h2
+      className="
+      text-4xl
+      font-bold
+      text-orange-500
+      mb-8
+      "
+    >
+      {category}
+    </h2>
 
-            <div className="space-y-4">
-              {category.children
-                .filter((item) => {
-  const matchesSearch =
-    item.name
-      .toLowerCase()
-      .includes(normalizedSearch);
+    <div className="space-y-4">
 
-  const matchesType =
-    foodFilter === "all"
-      ? true
-      : item.type === foodFilter;
+      {filteredItems
+  .filter(
+    (item) =>
+      item.category === category
+  )
+  .map((item) => (
 
-  return matchesSearch && matchesType;
-})
-                .map((item, index) => (
-                  <motion.div
-                    key={item.name}
-                    onClick={() =>
-                      setSelectedItem(item)
-                    }
-                    initial={{
-                      opacity: 0,
-                      y: 30,
-                    }}
-                    whileInView={{
-                      opacity: 1,
-                      y: 0,
-                    }}
-                    viewport={{
-                      once: true,
-                    }}
-                    whileHover={{
-                      scale: 1.02,
-                      y: -5,
-                    }}
-                    transition={{
-                      duration: 0.3,
-                      delay: index * 0.05,
-                    }}
-                    className="
-                      cursor-pointer
-                      flex
-                      justify-between
-                      items-center
-                      bg-gradient-to-r
-                      from-zinc-900
-                      via-zinc-800
-                      to-zinc-900
-                      border
-                      border-zinc-700
-                      rounded-xl
-                      p-5
-                      shadow-lg
-                     hover:border-orange-500
-hover:shadow-orange-500/20
-hover:shadow-2xl
-                    "
-                  >
-                   <div className="flex items-center justify-between w-full">
+    <motion.div
+      key={item.id}
+      className="
+      bg-zinc-900
+      border
+      border-zinc-700
+      rounded-xl
+      p-5
+      flex
+      justify-between
+      items-center
+      "
+    >
 
-  {/* Left */}
-  <div className="flex-1">
+      <div className="flex gap-5 items-center">
 
-    <div className="flex items-center gap-2">
+<img
+  src={item.image}
+  alt={item.name}
+  className="
+  w-24
+  h-24
+  min-w-24
+  object-cover
+  rounded-xl
+  "
+/>
 
-      {item.type === "veg" ? (
-        <span className="text-xl">🟢</span>
-      ) : (
-        <span className="text-xl">🔴</span>
-      )}
+  <div>
 
-      <h3 className="text-xl font-semibold">
-        {item.name}
-      </h3>
+    <h3 className="text-xl font-bold">
+      {item.name}
+    </h3>
 
-    </div>
+    <p className="text-zinc-400 mt-2">
+      {item.description}
+    </p>
 
-    {item.badge && (
+    <p className="text-orange-500 font-bold mt-2">
+      ₹{item.finalPrice}
+    </p>
+
+    {!item.isAvailable && (
       <span
         className="
-        inline-block
-        mt-2
-        bg-orange-500
-        text-xs
+        bg-red-500
         px-2
         py-1
         rounded-full
+        text-xs
         "
       >
-        🔥 {item.badge}
+        Out Of Stock
       </span>
     )}
 
-    <p className="text-zinc-400 text-sm mt-2">
-      Freshly prepared with authentic flavours
-    </p>
+  </div>
 
-    <div className="mt-3 flex items-center gap-3">
+</div>
 
-      <span className="text-yellow-400">
-        ⭐ 4.8
-      </span>
+<button
+  disabled={!item.isAvailable}
+  onClick={() =>
+    addToCart(item)
+  }
+  className={`
+    px-4
+    py-2
+    rounded-xl
+    ${
+      item.isAvailable
+        ? "bg-green-500"
+        : "bg-zinc-600 cursor-not-allowed"
+    }
+  `}
+>
+  {
+    item.isAvailable
+      ? "Add"
+      : "Unavailable"
+  }
+</button>
 
-      <span className="text-orange-500 font-bold">
-        ₹{item.price}
-      </span>
+    </motion.div>
+
+  ))}
 
     </div>
 
   </div>
 
-  {/* Right Side */}
-  <div
-  className="
-  w-32
-  h-32
-  rounded-2xl
-  bg-gradient-to-br
-  from-orange-500
-  via-red-500
-  to-orange-700
-  flex
-  items-center
-  justify-center
-  ml-6
-  relative
-  shadow-xl
-  "
->
-  <span className="text-5xl">
-  {item.type === "veg"
-    ? "🥗"
-    : "🍗"}
-</span>
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        addToCart(item);
-      }}
-      className="
-      absolute
-      -bottom-3
-      bg-green-500
-      hover:bg-green-600
-      px-4
-      py-2
-      rounded-full
-      font-semibold
-      "
-    >
-      Add
-    </button>
+))}
 
-  </div>
-
-</div>
-
-                  <h3 className="text-lg font-medium">
-  {item.name}
-</h3>
-
-<div className="flex items-center gap-3">
-
-  <span
-    className="
-    bg-orange-500
-    text-white
-    px-4
-    py-1
-    rounded-full
-    font-bold
-    "
-  >
-    ₹{item.price}
-  </span>
-
-  <button
-    onClick={(e) => {
-      e.stopPropagation();
-      addToCart(item);
-    }}
-    className="
-    bg-green-500
-    hover:bg-green-600
-    text-white
-    px-4
-    py-1
-    rounded-full
-    font-semibold
-    "
-  >
-    Add
-  </button>
-
-</div>
-                  </motion.div>
-                ))}
-            </div>
-          </div>
-        ))}
-
-        {filteredCategories.length === 0 && (
+        {filteredItems.length === 0 && (
           <div className="text-center py-20">
             <h2 className="text-2xl text-zinc-400">
               No items found

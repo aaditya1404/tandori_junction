@@ -1,9 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import {
+  useSearchParams,
+} from "next/navigation";
 
 export default function OrderSuccessPage() {
-  const orderId = "TJ1045";
+
+  const searchParams =
+    useSearchParams();
+
+  const orderId =
+    searchParams.get("orderId");
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center px-6">
@@ -20,6 +28,7 @@ export default function OrderSuccessPage() {
         text-center
         "
       >
+
         <div className="text-7xl mb-6">
           🎉
         </div>
@@ -41,6 +50,7 @@ export default function OrderSuccessPage() {
           p-5
           "
         >
+
           <p className="text-zinc-400">
             Order ID
           </p>
@@ -48,12 +58,13 @@ export default function OrderSuccessPage() {
           <h2 className="text-2xl font-bold text-orange-500">
             #{orderId}
           </h2>
+
         </div>
 
         <div className="grid md:grid-cols-2 gap-4 mt-8">
 
           <Link
-            href={`/track-order?id=${orderId}`}
+            href={`/track-order/${orderId}`}
             className="
             bg-orange-500
             py-3
@@ -77,6 +88,7 @@ export default function OrderSuccessPage() {
           </Link>
 
         </div>
+
       </div>
 
     </div>

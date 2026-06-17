@@ -3,9 +3,17 @@ import {
     collection,
     addDoc,
     serverTimestamp,
-    getDocs
+    getDocs,
+    getDoc
 } from "firebase/firestore";
-import { deleteDoc, doc } from "firebase/firestore";
+import {
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+import {
+  onSnapshot,
+} from "firebase/firestore";
 
 import { uploadImageToCloudinary } from "./uploadImage";
 
@@ -96,4 +104,136 @@ export const getAllMenuItems = async () => {
             error: error.message,
         };
     }
+};
+export const updateAvailability =
+  async (
+    id,
+    isAvailable
+  ) => {
+
+  try {
+
+    await updateDoc(
+      doc(
+        db,
+        "menu",
+        id
+      ),
+      {
+        isAvailable,
+      }
+    );
+
+    return {
+      success: true,
+    };
+
+  } catch (error) {
+
+    console.error(error);
+
+    return {
+      success: false,
+      error: error.message,
+    };
+
+  }
+
+};
+export const subscribeToMenu =
+  (callback) => {
+
+  return onSnapshot(
+    collection(
+      db,
+      "menu"
+    ),
+
+    (snapshot) => {
+
+      const items =
+        snapshot.docs.map(
+          (doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })
+        );
+
+      callback(items);
+
+    }
+  );
+
+};
+export const getMenuItemById =
+  async (id) => {
+
+  try {
+
+    const snapshot =
+      await getDoc(
+        doc(
+          db,
+          "menu",
+          id
+        )
+      );
+
+    if (!snapshot.exists()) {
+
+      return {
+        success: false,
+        error: "Menu item not found",
+      };
+
+    }
+
+    return {
+      success: true,
+      item: {
+        id: snapshot.id,
+        ...snapshot.data(),
+      },
+    };
+
+  } catch (error) {
+
+    return {
+      success: false,
+      error: error.message,
+    };
+
+  }
+
+};
+export const updateMenuItem =
+  async (
+    id,
+    data
+  ) => {
+
+  try {
+
+    await updateDoc(
+      doc(
+        db,
+        "menu",
+        id
+      ),
+      data
+    );
+
+    return {
+      success: true,
+    };
+
+  } catch (error) {
+
+    return {
+      success: false,
+      error: error.message,
+    };
+
+  }
+
 };

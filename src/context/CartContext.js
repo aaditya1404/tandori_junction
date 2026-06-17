@@ -8,32 +8,49 @@ export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
 
-  const addToCart = (item) => {
-    const existing = cart.find(
-      (i) => i.name === item.name
+ const addToCart = (item) => {
+
+  if (!item.isAvailable) {
+
+    alert(
+      "This item is currently unavailable"
     );
 
-    if (existing) {
-      setCart(
-        cart.map((i) =>
-          i.name === item.name
-            ? {
-                ...i,
-                quantity: i.quantity + 1,
-              }
-            : i
-        )
-      );
-    } else {
-      setCart([
-        ...cart,
-        {
-          ...item,
-          quantity: 1,
-        },
-      ]);
-    }
-  };
+    return;
+
+  }
+
+  const existing = cart.find(
+    (i) => i.name === item.name
+  );
+
+  if (existing) {
+
+    setCart(
+      cart.map((i) =>
+        i.name === item.name
+          ? {
+              ...i,
+              quantity:
+                i.quantity + 1,
+            }
+          : i
+      )
+    );
+
+  } else {
+
+    setCart([
+      ...cart,
+      {
+        ...item,
+        quantity: 1,
+      },
+    ]);
+
+  }
+
+};
 
   const increaseQty = (name) => {
     setCart(

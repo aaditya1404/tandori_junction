@@ -81,6 +81,19 @@ export default function AdminDashboard() {
   >
     View Orders
   </Link>
+  <Link
+  href="/admin/users"
+  className="
+  inline-block
+  bg-blue-500
+  hover:bg-blue-600
+  px-6
+  py-3
+  rounded-lg
+  "
+>
+  View Users
+</Link>
 
 </div>
         </div>

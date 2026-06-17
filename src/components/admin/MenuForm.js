@@ -1,18 +1,50 @@
 "use client";
 
-import { useState } from "react";
+//import { useState } from "react";
+import {
+  useState,
+  useEffect,
+} from "react";
 
-export default function MenuForm({ onSubmit, loading = false }) {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    price: "",
-    discount: "",
-    category: "",
-    isAvailable: true,
+export default function MenuForm({ onSubmit, loading = false }, initialData = null) {
+  const [formData, setFormData] =
+  useState({
+    name:
+      initialData?.name || "",
+    description:
+      initialData?.description || "",
+    price:
+      initialData?.price || "",
+    discount:
+      initialData?.discount || "",
+    category:
+      initialData?.category || "",
+    isAvailable:
+      initialData?.isAvailable ??
+      true,
+  });
+  useEffect(() => {
+
+  if (!initialData) return;
+
+  setFormData({
+    name:
+      initialData.name || "",
+    description:
+      initialData.description || "",
+    price:
+      initialData.price || "",
+    discount:
+      initialData.discount || "",
+    category:
+      initialData.category || "",
+    isAvailable:
+      initialData.isAvailable,
   });
 
+}, [initialData]);
   const [image, setImage] = useState(null);
+  
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
