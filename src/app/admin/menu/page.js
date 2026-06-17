@@ -14,191 +14,191 @@ import {
 } from "@/services/menuService";
 
 export default function MenuManagementPage() {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const { menuItems } = useSelector((state) => state.menu);
+  const { menuItems } = useSelector((state) => state.menu);
 
-    useEffect(() => {
-        const fetchMenu = async () => {
-            const result = await getAllMenuItems();
+  useEffect(() => {
+    const fetchMenu = async () => {
+      const result = await getAllMenuItems();
 
-            console.log(result);
+      console.log(result);
 
-            if (result.success) {
-                dispatch(setMenuItems(result.data));
-            }
-        };
+      if (result.success) {
+        dispatch(setMenuItems(result.data));
+      }
+    };
 
-        fetchMenu();
-    }, [dispatch]);
+    fetchMenu();
+  }, [dispatch]);
 
-    const handleDelete = async (id) => {
-        const confirmed = window.confirm(
-            "Are you sure you want to delete this menu item?"
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this menu item?"
+    );
+
+    if (!confirmed) return;
+
+    const result = await deleteMenuItemFromFirestore(id);
+
+    if (!result.success) {
+      alert(result.error);
+      return;
+    }
+
+    dispatch(deleteMenuItem(id));
+
+    alert("Menu item deleted successfully!");
+  };
+  const handleAvailability =
+    async (
+      id,
+      currentStatus
+    ) => {
+
+      const result =
+        await updateAvailability(
+          id,
+          !currentStatus
         );
 
-        if (!confirmed) return;
+      if (!result.success) {
 
-        const result = await deleteMenuItemFromFirestore(id);
+        alert(result.error);
+        return;
 
-        if (!result.success) {
-            alert(result.error);
-            return;
-        }
+      }
 
-        dispatch(deleteMenuItem(id));
+      const updatedMenu =
+        await getAllMenuItems();
 
-        alert("Menu item deleted successfully!");
+      if (
+        updatedMenu.success
+      ) {
+
+        dispatch(
+          setMenuItems(
+            updatedMenu.data
+          )
+        );
+
+      }
+
     };
-const handleAvailability =
-  async (
-    id,
-    currentStatus
-  ) => {
+  return (
+    <div className="min-h-screen bg-zinc-900 text-white p-8">
+      <div className="flex justify-between mb-8">
+        <h1 className="text-4xl font-bold">
+          Menu Management
+        </h1>
 
-  const result =
-    await updateAvailability(
-      id,
-      !currentStatus
-    );
+        <Link
+          href="/admin/menu/add"
+          className="bg-orange-500 px-5 py-3 rounded-lg"
+        >
+          + Add Menu Item
+        </Link>
+      </div>
 
-  if (!result.success) {
+      <table className="w-full border border-zinc-700">
+        <thead>
+          <tr>
+            <th className="p-3">Image</th>
+            <th className="p-3">Name</th>
+            <th className="p-3">Category</th>
+            <th className="p-3">Price</th>
+            <th className="p-3">Discount</th>
+            <th className="p-3">Available</th>
+            <th className="p-3">Actions</th>
+          </tr>
+        </thead>
 
-    alert(result.error);
-    return;
+        <tbody>
+          {menuItems.map((item) => (
+            <tr
+              key={item.id}
+              className="border-t border-zinc-700"
+            >
+              <td className="p-3">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-20 h-20 object-cover rounded"
+                />
+              </td>
 
-  }
+              <td className="p-3">{item.name}</td>
 
-  const updatedMenu =
-    await getAllMenuItems();
+              <td className="p-3">{item.category}</td>
 
-  if (
-    updatedMenu.success
-  ) {
+              <td className="p-3">₹{item.price}</td>
 
-    dispatch(
-      setMenuItems(
-        updatedMenu.data
-      )
-    );
+              <td className="p-3">{item.discount}%</td>
 
-  }
+              <td className="p-3">
+                {item.isAvailable ? "✅" : "❌"}
+              </td>
 
-};
-    return (
-        <div className="min-h-screen bg-zinc-900 text-white p-8">
-            <div className="flex justify-between mb-8">
-                <h1 className="text-4xl font-bold">
-                    Menu Management
-                </h1>
+              <td className="p-3 flex gap-2">
 
                 <Link
-                    href="/admin/menu/add"
-                    className="bg-orange-500 px-5 py-3 rounded-lg"
-                >
-                    + Add Menu Item
-                </Link>
-            </div>
-
-            <table className="w-full border border-zinc-700">
-                <thead>
-                    <tr>
-                        <th className="p-3">Image</th>
-                        <th className="p-3">Name</th>
-                        <th className="p-3">Category</th>
-                        <th className="p-3">Price</th>
-                        <th className="p-3">Discount</th>
-                        <th className="p-3">Available</th>
-                        <th className="p-3">Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {menuItems.map((item) => (
-                        <tr
-                            key={item.id}
-                            className="border-t border-zinc-700"
-                        >
-                            <td className="p-3">
-                                <img
-                                    src={item.image}
-                                    alt={item.name}
-                                    className="w-20 h-20 object-cover rounded"
-                                />
-                            </td>
-
-                            <td className="p-3">{item.name}</td>
-
-                            <td className="p-3">{item.category}</td>
-
-                            <td className="p-3">₹{item.price}</td>
-
-                            <td className="p-3">{item.discount}%</td>
-
-                            <td className="p-3">
-                                {item.isAvailable ? "✅" : "❌"}
-                            </td>
-
-                          <td className="p-3 flex gap-2">
-
-  <Link
-  href={`/admin/menu/edit/${item.id}`}
-  onClick={() =>
-    console.log(
-      "Edit clicked:",
-      item.id
-    )
-  }
-  className="
+                  href={`/admin/menu/edit/${item.id}`}
+                  onClick={() =>
+                    console.log(
+                      "Edit clicked:",
+                      item.id
+                    )
+                  }
+                  className="
   bg-blue-500
   px-4
   py-2
   rounded-lg
   "
->
-  Edit
-</Link>
+                >
+                  Edit
+                </Link>
 
-  <button
-    onClick={() =>
-      handleAvailability(
-        item.id,
-        item.isAvailable
-      )
-    }
-    className={
-      item.isAvailable
-        ? "bg-yellow-500 px-4 py-2 rounded-lg"
-        : "bg-green-500 px-4 py-2 rounded-lg"
-    }
-  >
-    {
-      item.isAvailable
-        ? "Make Unavailable"
-        : "Make Available"
-    }
-  </button>
+                <button
+                  onClick={() =>
+                    handleAvailability(
+                      item.id,
+                      item.isAvailable
+                    )
+                  }
+                  className={
+                    item.isAvailable
+                      ? "bg-yellow-500 px-4 py-2 rounded-lg"
+                      : "bg-green-500 px-4 py-2 rounded-lg"
+                  }
+                >
+                  {
+                    item.isAvailable
+                      ? "Make Unavailable"
+                      : "Make Available"
+                  }
+                </button>
 
-  <button
-    onClick={() =>
-      handleDelete(item.id)
-    }
-    className="
+                <button
+                  onClick={() =>
+                    handleDelete(item.id)
+                  }
+                  className="
     bg-red-500
     hover:bg-red-600
     px-4
     py-2
     rounded-lg
     "
-  >
-    Delete
-  </button>
+                >
+                  Delete
+                </button>
 
-</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }

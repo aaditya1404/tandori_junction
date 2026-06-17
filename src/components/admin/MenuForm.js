@@ -135,26 +135,20 @@ export default function MenuForm({ onSubmit, loading = false }, initialData = nu
           className="w-full p-3 rounded bg-zinc-700"
         >
           <option value="">Select Category</option>
-
-          <option value="Starter">Tandoor Items</option>
-
-          <option value="Main Course">Pakoda / Snacks</option>
-
-          <option value="Dessert">Chowmein</option>
-
-          <option value="Beverage">Rolls</option>
-
-          <option value="Veg">Thali</option>
-
-          <option value="Non Veg">Biryani</option>
-          <option value="Non Veg">Roti / Bread</option>
-          <option value="Non Veg">Rice</option>
-          <option value="Non Veg">Masala / Curry Items</option>
-          <option value="Non Veg">Dal Items</option>
-          <option value="Non Veg">Momos</option>
-          <option value="Non Veg">Dosa</option>
-          <option value="Non Veg">Pizza</option>
-          <option value="Non Veg">Burger</option>
+          <option value="Tandoor-items">Tandoor Items</option>
+          <option value="Pakoda/Snacks">Pakoda / Snacks</option>
+          <option value="Chowmein">Chowmein</option>
+          <option value="Rolls">Rolls</option>
+          <option value="Thali">Thali</option>
+          <option value="Biryani">Biryani</option>
+          <option value="Roti/Bread">Roti / Bread</option>
+          <option value="Rice">Rice</option>
+          <option value="Masala/Curry Items">Masala / Curry Items</option>
+          <option value="Dal-Items">Dal Items</option>
+          <option value="Momos">Momos</option>
+          <option value="Dosa">Dosa</option>
+          <option value="Pizza">Pizza</option>
+          <option value="Burger">Burger</option>
         </select>
       </div>
 

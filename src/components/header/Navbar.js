@@ -7,6 +7,12 @@ import { signInWithGoogle, logoutUser } from "@/services/authService";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import NotificationDrawer from "@/components/NotificationDrawer";
+import { Bonheur_Royale } from "next/font/google";
+
+const bonheurRoyale = Bonheur_Royale({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 export default function Navbar() {
 
@@ -40,8 +46,14 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="text-2xl font-bold text-orange-500"
+            className={`${bonheurRoyale.className} text-5xl font-bold text-orange-500 flex items-center justify-center gap-1`}
           >
+            <Image
+            src={"/images/logo.png"}
+            alt="Logo"
+            width={60}
+            height={60}>
+            </Image>
             Tandoori Junction
           </Link>
 
