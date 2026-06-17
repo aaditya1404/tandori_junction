@@ -6,7 +6,11 @@ import {
   useEffect,
 } from "react";
 
-export default function MenuForm({ onSubmit, loading = false }, initialData = null) {
+export default function MenuForm({
+  onSubmit,
+  loading = false,
+  initialData = null,
+}){
   const [formData, setFormData] =
   useState({
     name:
