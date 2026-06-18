@@ -30,9 +30,13 @@ export const createOrder = async (
   {
     ...orderData,
 
+    orderType:
+      "delivery",
+
     status: "pending",
 
-    createdAt: serverTimestamp(),
+    createdAt:
+      serverTimestamp(),
 
     orderDate:
       new Date()
@@ -246,5 +250,68 @@ export const subscribeToUserOrders =
 
     }
   );
+
+};
+export const createWalkInOrder =
+  async (data) => {
+
+  try {
+
+    const docRef =
+      await addDoc(
+        collection(
+          db,
+          "orders"
+        ),
+        {
+          ...data,
+
+          orderType:
+            "walkin",
+
+          status:
+            "completed",
+
+          createdAt:
+            serverTimestamp(),
+        }
+      );
+
+    return {
+      success: true,
+      id: docRef.id,
+    };
+
+  } catch (error) {
+
+    return {
+      success: false,
+      error:
+        error.message,
+    };
+
+  }
+
+};
+export const getNextOrderNumber =
+  async () => {
+
+  const snapshot =
+    await getDocs(
+      collection(
+        db,
+        "orders"
+      )
+    );
+
+  const count =
+    snapshot.size + 1;
+
+  return `ORD-${String(
+    count
+  ).padStart(
+    4,
+    "0"
+  )}`;
 
 };

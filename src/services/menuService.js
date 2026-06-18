@@ -214,6 +214,13 @@ export const updateMenuItem =
 
   try {
 
+    // Admin didn't upload new image
+    if (!data.image) {
+
+      delete data.image;
+
+    }
+
     await updateDoc(
       doc(
         db,

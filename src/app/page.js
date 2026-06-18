@@ -13,7 +13,7 @@ import AboutRestaurant from "@/components/AboutRestaurant";
 export default function Home() {
   return (
     <>
-      <Navbar />
+      
       <Hero />
       <Categories />
       <BestSellers />

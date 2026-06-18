@@ -1,13 +1,84 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Link from "next/link";
+
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  motion,
+} from "framer-motion";
+
+import {
+  getHeroData,
+} from "@/services/homeService";
 
 export default function Hero() {
+
+  const [hero,
+    setHero] =
+    useState(null);
+
+  useEffect(() => {
+
+    loadHero();
+
+  }, []);
+
+  const loadHero =
+    async () => {
+
+      const result =
+        await getHeroData();
+
+      console.log(result);
+
+      if (
+        result.success
+      ) {
+
+        setHero(
+          result.data
+        );
+
+      }
+
+    };
+
+  if (!hero) {
+
+    return (
+
+      <section
+        className="
+        h-screen
+        flex
+        items-center
+        justify-center
+        bg-black
+        text-white
+        "
+      >
+
+        Loading...
+
+      </section>
+
+    );
+
+  }
+
   return (
+
     <section
+      style={{
+        backgroundImage:
+          `url(${hero.image})`,
+      }}
       className="
       h-screen
-      bg-[url('/hero.jpg')]
       bg-cover
       bg-center
       relative
@@ -15,42 +86,99 @@ export default function Hero() {
       items-center
       "
     >
-      <div className="absolute inset-0 bg-black/60"></div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+      <div
+        className="
+        absolute
+        inset-0
+        bg-black/60
+        "
+      />
+
+      <div
+        className="
+        relative
+        z-10
+        max-w-7xl
+        mx-auto
+        px-6
+        "
+      >
 
         <motion.h1
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            y: 50,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.8,
+          }}
           className="
-          text-6xl
+          text-5xl
+          md:text-7xl
           font-bold
           text-white
           "
         >
-          Delicious Food
+
+          {hero.title}
+
         </motion.h1>
 
-        <p className="text-gray-200 mt-4 max-w-lg">
-          Taste authentic Indian food with
-          fresh ingredients and amazing flavour.
-        </p>
+        <motion.p
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            delay: 0.3,
+          }}
+          className="
+          text-gray-200
+          mt-4
+          max-w-xl
+          text-lg
+          "
+        >
 
-        <div className="flex gap-4 mt-8">
+          {hero.subtitle}
 
-          <button
+        </motion.p>
+
+        <div
+          className="
+          flex
+          gap-4
+          mt-8
+          flex-wrap
+          "
+        >
+
+          <Link
+            href="/menu"
             className="
             bg-orange-600
+            hover:bg-orange-700
+            transition
             px-6
             py-3
             rounded-lg
             text-white
             "
           >
-            Order Now
-          </button>
 
-          <button
+            {hero.buttonText}
+
+          </Link>
+
+          <Link
+            href="/menu"
             className="
             border
             border-white
@@ -58,14 +186,22 @@ export default function Hero() {
             px-6
             py-3
             rounded-lg
+            hover:bg-white
+            hover:text-black
+            transition
             "
           >
+
             View Menu
-          </button>
+
+          </Link>
 
         </div>
 
       </div>
+
     </section>
+
   );
-}
+
+} 

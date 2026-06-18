@@ -62,10 +62,10 @@ export default function MenuForm({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    onSubmit({
-      ...formData,
-      image,
-    });
+   onSubmit({
+  ...formData,
+  ...(image && { image }),
+});
   };
 
   return (
