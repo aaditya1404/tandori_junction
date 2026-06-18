@@ -652,6 +652,28 @@ setOnlineRevenue(
 >
   Revenue Report
 </Link>
+<Link
+  href="/admin/menu-hero"
+  className="
+  bg-orange-500
+  px-6
+  py-3
+  rounded-lg
+  "
+>
+  Menu Hero Settings
+</Link>
+<Link
+  href="/admin/coupons"
+  className="
+  bg-purple-500
+  px-6
+  py-3
+  rounded-lg
+  "
+>
+  Manage Coupons
+</Link>
 
       </div>
 
