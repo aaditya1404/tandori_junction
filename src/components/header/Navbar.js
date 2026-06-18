@@ -1,13 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import NotificationDrawer from "@/components/NotificationDrawer";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { signInWithGoogle, logoutUser } from "@/services/authService";
-import Image from "next/image";
 import { useCart } from "@/context/CartContext";
-import NotificationDrawer from "@/components/NotificationDrawer";
+
+// Fonts imports
 import { Bonheur_Royale } from "next/font/google";
+import { Cormorant_Garamond } from "next/font/google";
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+});
 
 const bonheurRoyale = Bonheur_Royale({
   subsets: ["latin"],
@@ -17,15 +25,12 @@ const bonheurRoyale = Bonheur_Royale({
 export default function Navbar() {
 
   const user = useSelector((state) => state.auth.user);
-  const [showProfileMenu, setShowProfileMenu] =
-    useState(false);
-  const {
-    totalCartItems,
-    setCartOpen,
-  } = useCart();
-  const [notificationOpen, setNotificationOpen] =
-    useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const { totalCartItems, setCartOpen, } = useCart();
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // User Login Function
   const handleLogin = async () => {
     const result = await signInWithGoogle();
 
@@ -34,25 +39,28 @@ export default function Navbar() {
     }
   };
 
+  // User Logout Function
   const handleLogout = async () => {
     await logoutUser();
   };
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-zinc-800">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <nav className="fixed w-full z-50 bg-black/50 backdrop-blur-md border-b border-zinc-800">
+        <div className="w-full mx-auto px-6 h-20 flex items-center justify-between">
 
-          {/* Logo */}
+          {/* Logo of the restaurent */}
           <Link
             href="/"
-            className={`${bonheurRoyale.className} text-5xl font-bold text-orange-500 flex items-center justify-center gap-1`}
+            className={`${bonheurRoyale.className} text-4xl lg:text-5xl font-bold text-orange-500 flex items-center justify-center gap-1`}
           >
             <Image
-            src={"/images/logo.png"}
-            alt="Logo"
-            width={60}
-            height={60}>
+              src={"/images/logo.png"}
+              alt="Logo"
+              width={60}
+              height={60}
+              className="h-12 w-12 lg:h-14 lg:w-14"
+            >
             </Image>
             Tandoori Junction
           </Link>
@@ -105,6 +113,15 @@ export default function Navbar() {
             </li>
           </ul>
 
+          {/* Hamburger Button (Mobile Only) */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden text-white text-3xl"
+          >
+            ☰
+          </button>
+
+          {/* Desktop User Login / Logout Section */}
           {user ? (
             <div className="relative hidden md:flex items-center gap-4">
               <button
@@ -116,15 +133,7 @@ export default function Navbar() {
                 🔔
 
                 <span
-                  className="
-    absolute
-    -top-1
-    -right-1
-    bg-red-500
-    w-4
-    h-4
-    rounded-full
-    "
+                  className="absolute -top-1 -right-1 bg-red-500 w-4 h-4 rounded-full"
                 />
               </button>
               <Image
@@ -137,28 +146,12 @@ export default function Navbar() {
                     !showProfileMenu
                   )
                 }
-                className="
-  rounded-full
-  cursor-pointer
-  border-2
-  border-orange-500
-  "
+                className="rounded-full cursor-pointer border-2 border-orange-500"
               />
 
               {showProfileMenu && (
                 <div
-                  className="
-    absolute
-    top-16
-    right-0
-    w-72
-    bg-zinc-900
-    border
-    border-zinc-800
-    rounded-2xl
-    shadow-xl
-    overflow-hidden
-    "
+                  className="absolute top-16 right-0 w-72 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-xl overflow-hidden"
                 >
                   <div className="p-4 border-b border-zinc-800">
 
@@ -174,37 +167,21 @@ export default function Navbar() {
 
                   <Link
                     href="/my-orders"
-                    className="
-      block
-      px-4
-      py-3
-      hover:bg-zinc-800
-      "
+                    className="block px-4 py-3 hover:bg-zinc-800"
                   >
                     📦 My Orders
                   </Link>
 
                   <Link
                     href="/profile"
-                    className="
-  block
-  px-4
-  py-3
-  hover:bg-zinc-800
-  "
+                    className="block px-4 py-3 hover:bg-zinc-800"
                   >
                     👤 Profile
                   </Link>
 
                   <button
                     onClick={() => setCartOpen(true)}
-                    className="
-      w-full
-      text-left
-      px-4
-      py-3
-      hover:bg-zinc-800
-      "
+                    className="w-full text-left px-4 py-3 hover:bg-zinc-800"
                   >
                     🛒 Open Cart
                   </button>
@@ -230,6 +207,108 @@ export default function Navbar() {
           )}
 
         </div>
+
+        {mobileMenuOpen && (
+          <div className="fixed w-full md:hidden bg-zinc-950 border-b border-zinc-800">
+            <div className="flex flex-col px-6 py-5 space-y-4 text-white">
+
+              <Link
+                href="/menu"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Menu
+              </Link>
+
+              <Link
+                href="/gallery"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Gallery
+              </Link>
+
+              <Link
+                href="/about"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+
+              <Link
+                href="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Contact
+              </Link>
+
+              {user ? (
+                <>
+                  <hr className="border-zinc-700" />
+
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src={user.photoURL || "/images/user/user.png"}
+                      alt="Profile"
+                      width={45}
+                      height={45}
+                      className="rounded-full border border-orange-500"
+                    />
+
+                    <div>
+                      <p>{user.displayName}</p>
+                      <p className="text-sm text-zinc-400">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  <Link
+                    href="/my-orders"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    📦 My Orders
+                  </Link>
+
+                  <Link
+                    href="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    👤 Profile
+                  </Link>
+
+                  <button
+                    onClick={() => {
+                      setCartOpen(true);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="text-left"
+                  >
+                    🛒 Open Cart ({totalCartItems})
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="bg-red-500 py-2 rounded-lg"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    handleLogin();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="bg-orange-500 py-2 rounded-lg"
+                >
+                  Login
+                </button>
+              )}
+            </div>
+          </div>
+        )}
 
       </nav>
       <NotificationDrawer
