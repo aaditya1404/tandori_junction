@@ -26,6 +26,7 @@ export const createMenuItem = async (data) => {
             discount,
             category,
             isAvailable,
+            foodType,
             image,
         } = data;
 
@@ -49,6 +50,7 @@ export const createMenuItem = async (data) => {
             finalPrice,
             category,
             isAvailable,
+            foodType,
             image: imageUrl
         });
 

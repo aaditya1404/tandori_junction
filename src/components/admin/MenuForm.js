@@ -10,45 +10,48 @@ export default function MenuForm({
   onSubmit,
   loading = false,
   initialData = null,
-}){
+}) {
   const [formData, setFormData] =
-  useState({
-    name:
-      initialData?.name || "",
-    description:
-      initialData?.description || "",
-    price:
-      initialData?.price || "",
-    discount:
-      initialData?.discount || "",
-    category:
-      initialData?.category || "",
-    isAvailable:
-      initialData?.isAvailable ??
-      true,
-  });
+    useState({
+      name:
+        initialData?.name || "",
+      description:
+        initialData?.description || "",
+      price:
+        initialData?.price || "",
+      discount:
+        initialData?.discount || 0,
+      category:
+        initialData?.category || "",
+      isAvailable:
+        initialData?.isAvailable ??
+        true,
+      foodType:
+        initialData?.foodType || "Veg",
+    });
   useEffect(() => {
 
-  if (!initialData) return;
+    if (!initialData) return;
 
-  setFormData({
-    name:
-      initialData.name || "",
-    description:
-      initialData.description || "",
-    price:
-      initialData.price || "",
-    discount:
-      initialData.discount || "",
-    category:
-      initialData.category || "",
-    isAvailable:
-      initialData.isAvailable,
-  });
+    setFormData({
+      name:
+        initialData.name || "",
+      description:
+        initialData.description || "",
+      price:
+        initialData.price || "",
+      discount:
+        initialData.discount || 0,
+      category:
+        initialData.category || "",
+      isAvailable:
+        initialData.isAvailable,
+      foodType: initialData.foodType || "Veg",
+    });
 
-}, [initialData]);
+  }, [initialData]);
   const [image, setImage] = useState(null);
-  
+
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -110,7 +113,7 @@ export default function MenuForm({
           value={formData.price}
           onChange={handleChange}
           required
-          className="w-full p-3 rounded bg-zinc-700"
+          className="w-full p-3 rounded bg-zinc-700 appearance-none"
         />
       </div>
 
@@ -123,7 +126,7 @@ export default function MenuForm({
           name="discount"
           value={formData.discount}
           onChange={handleChange}
-          className="w-full p-3 rounded bg-zinc-700"
+          className="w-full p-3 rounded bg-zinc-700 appearance-none"
         />
       </div>
 
@@ -169,6 +172,39 @@ export default function MenuForm({
             setImage(e.target.files[0])
           }
         />
+      </div>
+
+      {/* Food Type */}
+      <div>
+        <label className="block mb-2 font-medium">
+          Food Type
+        </label>
+
+        <div className="flex items-center gap-6">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="foodType"
+              value="Veg"
+              checked={formData.foodType === "Veg"}
+              onChange={handleChange}
+              className="accent-green-500"
+            />
+            <span>🟢 Veg</span>
+          </label>
+
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="foodType"
+              value="Non Veg"
+              checked={formData.foodType === "Non Veg"}
+              onChange={handleChange}
+              className="accent-red-500"
+            />
+            <span>🔴 Non Veg</span>
+          </label>
+        </div>
       </div>
 
       {/* Availability */}
