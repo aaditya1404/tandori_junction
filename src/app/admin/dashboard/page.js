@@ -630,6 +630,18 @@ setOnlineRevenue(
           Sales Analytics
         </Link>
         <Link
+  href="/admin/expenses"
+  className="
+  bg-red-500
+  hover:bg-red-600
+  px-6
+  py-3
+  rounded-lg
+  "
+>
+  Manage Expenses
+</Link>
+        <Link
   href="/admin/revenue"
   className="
   bg-yellow-500
