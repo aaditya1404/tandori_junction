@@ -10,10 +10,16 @@ import FoodModal from "@/components/FoodModal";
 import { useCart } from "@/context/CartContext";
 import { useState, useEffect } from "react";
 
+
 import {
   subscribeToMenu,
 } from "@/services/menuService";
-
+import {
+  getMenuHero,
+} from "@/services/settingsService";
+import {
+  getTopSellingItems,
+} from "@/services/analyticsService";
 
 export default function MenuPage() {
   const [search, setSearch] = useState("");
@@ -23,7 +29,20 @@ export default function MenuPage() {
   const { addToCart } = useCart();
   const [menuItems, setMenuItems] =
   useState([]);
+  const [topSelling,
+  setTopSelling] =
+  useState([]);
+  
+const [hero,
+  setHero] =
+  useState(null);
+  const [averageRating,
+  setAverageRating] =
+  useState(0);
 
+const [totalReviews,
+  setTotalReviews] =
+  useState(0);
   const normalizedSearch = search.trim().toLowerCase();
 
  const filteredItems =
@@ -32,7 +51,54 @@ export default function MenuPage() {
       .toLowerCase()
       .includes(normalizedSearch)
   );
+  const loadRatings =
+  async () => {
+
+    const stats =
+      await getRatingStats();
+
+    setAverageRating(
+      stats.averageRating
+    );
+
+    setTotalReviews(
+      stats.totalReviews
+    );
+
+  };
+  const loadHero =
+  async () => {
+
+    const result =
+      await getMenuHero();
+
+    if (
+      result.success
+    ) {
+
+      setHero(
+        result.data
+      );
+
+    }
+
+  };
+  const loadTopSelling =
+  async () => {
+
+    const data =
+      await getTopSellingItems();
+
+    setTopSelling(
+      data
+    );
+
+  };
 useEffect(() => {
+
+  loadHero();
+  loadTopSelling();
+  loadRatings();
 
   const unsubscribe =
     subscribeToMenu(
@@ -51,7 +117,15 @@ useEffect(() => {
 }, []);
   const totalItems =
   menuItems.length;
+if (!hero) {
 
+  return (
+    <div className="text-white p-10">
+      Loading...
+    </div>
+  );
+
+}
   return (
     <div
   className="
@@ -131,28 +205,28 @@ useEffect(() => {
 
     <div>
       <h2 className="text-4xl md:text-5xl font-bold">
-        Tandoori Junction
+      {hero.restaurantName}
       </h2>
 
       <p className="text-zinc-400 mt-3 text-lg">
-        North Indian • Chinese • Tandoor
+       {hero.cuisine}
       </p>
 
       <div className="flex flex-wrap gap-6 mt-6">
 
+       <div>
+  <p className="font-bold text-xl">
+    ⭐ {averageRating}
+  </p>
+
+  <p className="text-zinc-400 text-sm">
+    {totalReviews} Reviews
+  </p>
+</div>
+
         <div>
           <p className="font-bold text-xl">
-            ⭐ 4.8
-          </p>
-
-          <p className="text-zinc-400 text-sm">
-            2300+ Reviews
-          </p>
-        </div>
-
-        <div>
-          <p className="font-bold text-xl">
-            🕒 30-40 Min
+            🕒 {hero.deliveryTime}
           </p>
 
           <p className="text-zinc-400 text-sm">
@@ -162,7 +236,7 @@ useEffect(() => {
 
         <div>
           <p className="font-bold text-xl">
-            🍗 5000+
+            🍗 {hero.ordersDelivered}
           </p>
 
           <p className="text-zinc-400 text-sm">
@@ -185,7 +259,7 @@ useEffect(() => {
         rounded-xl
         "
       >
-        🔥 Flat ₹100 OFF
+       {hero.offer1}
       </div>
 
       <div
@@ -198,7 +272,7 @@ useEffect(() => {
         rounded-xl
         "
       >
-        🚚 Free Delivery Above ₹499
+        {hero.offer2}
       </div>
 
       <div
@@ -211,7 +285,7 @@ useEffect(() => {
         rounded-xl
         "
       >
-        🎁 Free Drink Above ₹799
+        {hero.offer3}
       </div>
 
     </div>
@@ -296,41 +370,32 @@ useEffect(() => {
 
   <div className="grid md:grid-cols-3 gap-4">
 
-   <button
-  onClick={() =>
-    document
-      .getElementById("Biryani")
-      ?.scrollIntoView({
-        behavior: "smooth",
-      })
-  }
->
-  🔥 Chicken Biryani
-</button>
+  {topSelling.map(
+  (item) => (
 
     <button
-  onClick={() =>
-    document
-      .getElementById("Biryani")
-      ?.scrollIntoView({
-        behavior: "smooth",
-      })
-  }
->
-  🔥 Chicken Biryani
-</button>
+      key={item.name}
+      className="
+      bg-zinc-900
+      p-4
+      rounded-xl
+      "
+      onClick={() =>
+        document
+          .getElementById(
+            item.name
+          )
+          ?.scrollIntoView({
+            behavior:
+              "smooth",
+          })
+      }
+    >
+      🔥 {item.name}
+    </button>
 
-   <button
-  onClick={() =>
-    document
-      .getElementById("Biryani")
-      ?.scrollIntoView({
-        behavior: "smooth",
-      })
-  }
->
-  🔥 Chicken Biryani
-</button>
+  )
+)}
 
   </div>
 
@@ -478,7 +543,7 @@ useEffect(() => {
 
     <div className="space-y-4">
 
-      {filteredItems
+{filteredItems
   .filter(
     (item) =>
       item.category === category
@@ -486,6 +551,7 @@ useEffect(() => {
   .map((item) => (
 
     <motion.div
+      id={item.name}
       key={item.id}
       className="
       bg-zinc-900
