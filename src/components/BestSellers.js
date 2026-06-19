@@ -47,9 +47,15 @@ export default function BestSellers() {
     <section className="py-24 bg-black text-white">
 
       <div className="max-w-7xl mx-auto px-6">
-        <div className="mb-16 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.7 }}
+          className="mb-16 text-center"
+        >
           <p className="uppercase tracking-[0.3em] text-orange-500 text-sm font-semibold">
-            Chef's Recommendation
+            Chef&apos;s Recommendation
           </p>
 
           <h2 className="mt-3 text-5xl font-bold text-white">
@@ -59,123 +65,35 @@ export default function BestSellers() {
           <p className="mt-4 text-zinc-400 max-w-xl mx-auto">
             Our most loved dishes, freshly prepared and enjoyed by hundreds of customers.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid md:grid-cols-4 gap-8">
 
           {bestSellers.map(
             (dish) => (
-
-              //             <motion.div
-              //               key={dish.id || dish.name}
-              //               whileHover={{
-              //                 y: -10,
-              //               }}
-              //               className="
-              //               bg-zinc-900
-              //               rounded-2xl
-              //               overflow-hidden
-              //               border
-              //               border-zinc-800
-              //               "
-              //             >
-
-              //               <img
-              //                 src={
-              //                   dish.image ||
-              //                   "/food-placeholder.jpg"
-              //                 }
-              //                 alt={dish.name}
-              //                 onError={(e) => {
-              //                   e.target.src =
-              //                     "/food-placeholder.jpg";
-              //                 }}
-              //                 className="
-              // h-60
-              // w-full
-              // object-cover
-              // "
-              //               />
-
-              //               <div className="p-5">
-
-              //                 <span
-              //                   className="
-              //                   bg-orange-600
-              //                   text-xs
-              //                   px-3
-              //                   py-1
-              //                   rounded-full
-              //                   "
-              //                 >
-              //                   Best Seller
-              //                 </span>
-
-              //                 <h3
-              //                   className="
-              //                   text-xl
-              //                   font-semibold
-              //                   mt-4
-              //                   "
-              //                 >
-              //                   {dish.name}
-              //                 </h3>
-
-              //                 <p
-              //                   className="
-              //                   text-gray-400
-              //                   mt-2
-              //                   "
-              //                 >
-              //                   Sold {dish.quantity} times
-              //                 </p>
-
-              //                 <div
-              //                   className="
-              //                   flex
-              //                   justify-between
-              //                   items-center
-              //                   mt-4
-              //                   "
-              //                 >
-
-              //                   <span
-              //                     className="
-              //                     text-orange-500
-              //                     text-xl
-              //                     "
-              //                   >
-              //                     ₹{dish.price || 0}
-              //                   </span>
-
-              //                   <button
-              //                     onClick={() => {
-              //                       console.log(dish);
-
-
-              //                       addToCart(dish);
-              //                     }}
-              //                     className="
-              // bg-orange-600
-              // hover:bg-orange-700
-              // px-4
-              // py-2
-              // rounded-lg
-              // transition
-              // "
-              //                   >
-              //                     Add To Cart
-              //                   </button>
-
-              //                 </div>
-
-              //               </div>
-
-              //             </motion.div>
               <motion.div
                 key={dish.id || dish.name}
-                whileHover={{ y: -8, scale: 1.02 }}
-                transition={{ duration: 0.3 }}
+                initial={{
+                  opacity: 0,
+                  y: 80,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{
+                  once: true,
+                  amount: 0.2,
+                }}
+                transition={{
+                  duration: 0.6,
+                  delay: bestSellers.indexOf(dish) * 0.1,
+                }}
+                whileHover={{
+                  y: -10,
+                  scale: 1.03,
+                  rotate: 0.5,
+                }}
                 className="group overflow-hidden rounded-3xl bg-zinc-900/80 backdrop-blur-md border border-zinc-800 hover:border-orange-500 hover:shadow-[0_0_30px_rgba(249,115,22,0.2)] transition-all duration-300"
               >
                 {/* Image */}
@@ -195,7 +113,7 @@ export default function BestSellers() {
                 </div>
 
                 {/* Content */}
-                <div className="p-6">
+                <div div className="p-6" >
                   <h3 className="text-2xl font-bold text-white">
                     {dish.name}
                   </h3>
@@ -227,9 +145,9 @@ export default function BestSellers() {
 
         </div>
 
-      </div>
+      </div >
 
-    </section>
+    </section >
 
   );
 

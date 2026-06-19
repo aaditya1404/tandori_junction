@@ -159,6 +159,7 @@
 import React from "react";
 import { Bonheur_Royale } from "next/font/google";
 import { Cinzel } from "next/font/google";
+import Link from "next/link";
 
 
 const bonheurRoyale = Bonheur_Royale({
@@ -203,12 +204,8 @@ const Hero = () => {
         {/* Buttons */}
         <div className="mt-8 flex flex-col sm:flex-row gap-4">
           <button className={`${cinzel.className} px-8 py-3 bg-orange-500 text-white rounded-lg font-semibold transition-all duration-300 ease-in-out hover:bg-orange-600 hover:scale-105 active:scale-95 shadow-lg`}>
-            Order Now
+            <Link href={"/menu"}>Order Now</Link>
           </button>
-
-          {/* <button className={`${cinzel.className} px-8 py-3 border-2 border-white text-white rounded-lg font-semibold transition-all duration-300 ease-in-out hover:bg-white hover:text-black hover:scale-105 active:scale-95`}>
-            View Menu
-          </button> */}
         </div>
       </div>
 
