@@ -307,134 +307,134 @@ export default function Navbar() {
               )}
             </div>
           </div>
-        )} */}
-
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{
-                height: 0,
-                opacity: 0,
-              }}
-              animate={{
-                height: "auto",
-                opacity: 1,
-              }}
-              exit={{
-                height: 0,
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.35,
-                ease: "easeInOut",
-              }}
-              className="fixed w-full overflow-hidden md:hidden border-b border-zinc-800 bg-black/50 backdrop-blur-md"
-            >
-              <div className="flex flex-col px-6 py-5 space-y-4 text-white">
-
-                {/* 👇 Paste everything that was inside your old menu here */}
-
-                <Link
-                  href="/menu"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Menu
-                </Link>
-
-                <Link
-                  href="/gallery"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Gallery
-                </Link>
-
-                <Link
-                  href="/about"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  About
-                </Link>
-
-                <Link
-                  href="/contact"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Contact
-                </Link>
-
-                {user ? (
-                  <>
-                    <hr className="border-zinc-700" />
-
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={user.photoURL || "/images/user/user.png"}
-                        alt="Profile"
-                        width={45}
-                        height={45}
-                        className="rounded-full border border-orange-500"
-                      />
-
-                      <div>
-                        <p>{user.displayName}</p>
-                        <p className="text-sm text-zinc-400">
-                          {user.email}
-                        </p>
-                      </div>
-                    </div>
-
-                    <Link
-                      href="/my-orders"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      📦 My Orders
-                    </Link>
-
-                    <Link
-                      href="/profile"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      👤 Profile
-                    </Link>
-
-                    <button
-                      onClick={() => {
-                        setCartOpen(true);
-                        setMobileMenuOpen(false);
-                      }}
-                      className="text-left"
-                    >
-                      🛒 Open Cart ({totalCartItems})
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="bg-red-500 py-2 rounded-lg"
-                    >
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={() => {
-                      handleLogin();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="bg-orange-500 py-2 rounded-lg"
-                  >
-                    Login
-                  </button>
-                )}
-
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+          )} */}
 
       </nav>
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{
+              height: 0,
+              opacity: 0,
+            }}
+            animate={{
+              height: "auto",
+              opacity: 1,
+            }}
+            exit={{
+              height: 0,
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.35,
+              ease: "easeInOut",
+            }}
+            className="fixed z-20 top-20 w-full overflow-hidden md:hidden border-b border-zinc-800 bg-black/50 backdrop-blur-md"
+          >
+            <div className="flex flex-col px-6 py-5 space-y-4 text-white">
+
+              {/* 👇 Paste everything that was inside your old menu here */}
+
+              <Link
+                href="/menu"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Menu
+              </Link>
+
+              <Link
+                href="/gallery"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Gallery
+              </Link>
+
+              <Link
+                href="/about"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+
+              <Link
+                href="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Contact
+              </Link>
+
+              {user ? (
+                <>
+                  <hr className="border-zinc-700" />
+
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src={user.photoURL || "/images/user/user.png"}
+                      alt="Profile"
+                      width={45}
+                      height={45}
+                      className="rounded-full border border-orange-500"
+                    />
+
+                    <div>
+                      <p>{user.displayName}</p>
+                      <p className="text-sm text-zinc-400">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  <Link
+                    href="/my-orders"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    📦 My Orders
+                  </Link>
+
+                  <Link
+                    href="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    👤 Profile
+                  </Link>
+
+                  <button
+                    onClick={() => {
+                      setCartOpen(true);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="text-left"
+                  >
+                    🛒 Open Cart ({totalCartItems})
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="bg-red-500 py-2 rounded-lg"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    handleLogin();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="bg-orange-500 py-2 rounded-lg"
+                >
+                  Login
+                </button>
+              )}
+
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <NotificationDrawer
         open={notificationOpen}
         onClose={() =>
