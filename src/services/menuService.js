@@ -1,111 +1,99 @@
 import { db } from "@/firebase/firebase";
-import {
-    collection,
-    addDoc,
-    serverTimestamp,
-    getDocs,
-    getDoc
-} from "firebase/firestore";
-import {
-  deleteDoc,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
-import {
-  onSnapshot,
-} from "firebase/firestore";
+import { collection, addDoc, getDocs, getDoc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { onSnapshot } from "firebase/firestore";
 
 import { uploadImageToCloudinary } from "./uploadImage";
 
+// Creating the menu items by the super admin
 export const createMenuItem = async (data) => {
-    try {
-        const {
-            name,
-            description,
-            price,
-            discount,
-            category,
-            isAvailable,
-            foodType,
-            image,
-        } = data;
+  try {
+    const {
+      name,
+      description,
+      price,
+      discount,
+      category,
+      isAvailable,
+      foodType,
+      image,
+    } = data;
 
-        // Upload image to Cloudinary
-        const imageUrl = await uploadImageToCloudinary(image);
+    // Upload image to Cloudinary
+    const imageUrl = await uploadImageToCloudinary(image);
 
-        // Calculate final price
-        const originalPrice = Number(price);
-        const discountValue = Number(discount || 0);
+    // Calculate final price
+    const originalPrice = Number(price);
+    const discountValue = Number(discount || 0);
 
-        const finalPrice =
-            originalPrice -
-            (originalPrice * discountValue) / 100;
+    const finalPrice = originalPrice - (originalPrice * discountValue) / 100;
 
-        // Save to Firestore
-        const docRef = await addDoc(collection(db, "menu"), {
-            name,
-            description,
-            price: originalPrice,
-            discount: discountValue,
-            finalPrice,
-            category,
-            isAvailable,
-            foodType,
-            image: imageUrl
-        });
+    // Save to Firestore
+    const docRef = await addDoc(collection(db, "menu"), {
+      name,
+      description,
+      price: originalPrice,
+      discount: discountValue,
+      finalPrice,
+      category,
+      isAvailable,
+      foodType,
+      image: imageUrl
+    });
 
-        return {
-            success: true,
-            id: docRef.id,
-        };
-    } catch (error) {
-        console.error(error);
+    return {
+      success: true,
+      id: docRef.id,
+    };
+  } catch (error) {
+    console.error(error);
 
-        return {
-            success: false,
-            error: error.message,
-        };
-    }
+    return {
+      success: false,
+      error: error.message,
+    };
+  }
 };
 
+// Deleting the menu items by the super admin
 export const deleteMenuItemFromFirestore = async (id) => {
-    try {
-        await deleteDoc(doc(db, "menu", id));
+  try {
+    await deleteDoc(doc(db, "menu", id));
 
-        return {
-            success: true,
-        };
-    } catch (error) {
-        console.error(error);
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error(error);
 
-        return {
-            success: false,
-            error: error.message,
-        };
-    }
+    return {
+      success: false,
+      error: error.message,
+    };
+  }
 };
 
 export const getAllMenuItems = async () => {
-    try {
-        const snapshot = await getDocs(collection(db, "menu"));
+  try {
+    const snapshot = await getDocs(collection(db, "menu"));
 
-        const menuItems = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
+    const menuItems = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
 
-        return {
-            success: true,
-            data: menuItems,
-        };
-    } catch (error) {
-        console.error(error);
+    return {
+      success: true,
+      data: menuItems,
+    };
+  } catch (error) {
+    console.error(error);
 
-        return {
-            success: false,
-            error: error.message,
-        };
-    }
+    return {
+      success: false,
+      error: error.message,
+    };
+  }
 };
 export const updateAvailability =
   async (
@@ -113,136 +101,136 @@ export const updateAvailability =
     isAvailable
   ) => {
 
-  try {
+    try {
 
-    await updateDoc(
-      doc(
-        db,
-        "menu",
-        id
-      ),
-      {
-        isAvailable,
-      }
-    );
-
-    return {
-      success: true,
-    };
-
-  } catch (error) {
-
-    console.error(error);
-
-    return {
-      success: false,
-      error: error.message,
-    };
-
-  }
-
-};
-export const subscribeToMenu =
-  (callback) => {
-
-  return onSnapshot(
-    collection(
-      db,
-      "menu"
-    ),
-
-    (snapshot) => {
-
-      const items =
-        snapshot.docs.map(
-          (doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          })
-        );
-
-      callback(items);
-
-    }
-  );
-
-};
-export const getMenuItemById =
-  async (id) => {
-
-  try {
-
-    const snapshot =
-      await getDoc(
+      await updateDoc(
         doc(
           db,
           "menu",
           id
-        )
+        ),
+        {
+          isAvailable,
+        }
       );
 
-    if (!snapshot.exists()) {
+      return {
+        success: true,
+      };
+
+    } catch (error) {
+
+      console.error(error);
 
       return {
         success: false,
-        error: "Menu item not found",
+        error: error.message,
       };
 
     }
 
-    return {
-      success: true,
-      item: {
-        id: snapshot.id,
-        ...snapshot.data(),
-      },
-    };
+  };
+export const subscribeToMenu =
+  (callback) => {
 
-  } catch (error) {
+    return onSnapshot(
+      collection(
+        db,
+        "menu"
+      ),
 
-    return {
-      success: false,
-      error: error.message,
-    };
+      (snapshot) => {
 
-  }
+        const items =
+          snapshot.docs.map(
+            (doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })
+          );
 
-};
+        callback(items);
+
+      }
+    );
+
+  };
+export const getMenuItemById =
+  async (id) => {
+
+    try {
+
+      const snapshot =
+        await getDoc(
+          doc(
+            db,
+            "menu",
+            id
+          )
+        );
+
+      if (!snapshot.exists()) {
+
+        return {
+          success: false,
+          error: "Menu item not found",
+        };
+
+      }
+
+      return {
+        success: true,
+        item: {
+          id: snapshot.id,
+          ...snapshot.data(),
+        },
+      };
+
+    } catch (error) {
+
+      return {
+        success: false,
+        error: error.message,
+      };
+
+    }
+
+  };
 export const updateMenuItem =
   async (
     id,
     data
   ) => {
 
-  try {
+    try {
 
-    // Admin didn't upload new image
-    if (!data.image) {
+      // Admin didn't upload new image
+      if (!data.image) {
 
-      delete data.image;
+        delete data.image;
+
+      }
+
+      await updateDoc(
+        doc(
+          db,
+          "menu",
+          id
+        ),
+        data
+      );
+
+      return {
+        success: true,
+      };
+
+    } catch (error) {
+
+      return {
+        success: false,
+        error: error.message,
+      };
 
     }
 
-    await updateDoc(
-      doc(
-        db,
-        "menu",
-        id
-      ),
-      data
-    );
-
-    return {
-      success: true,
-    };
-
-  } catch (error) {
-
-    return {
-      success: false,
-      error: error.message,
-    };
-
-  }
-
-};
+  };

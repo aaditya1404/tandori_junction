@@ -47,7 +47,7 @@ export default function Navbar() {
   return (
     <>
       <nav className="fixed w-full z-50 bg-black/50 backdrop-blur-md border-b border-zinc-800">
-        <div className="w-full mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="w-full mx-auto px-6 h-20 flex items-center justify-around">
 
           {/* Logo of the restaurent */}
           <Link
@@ -70,7 +70,7 @@ export default function Navbar() {
             <li>
               <Link
                 href="/"
-                className="hover:text-orange-500 transition"
+                className="transition-all duration-300 ease-in-out hover:text-orange-500"
               >
                 Home
               </Link>
@@ -79,7 +79,7 @@ export default function Navbar() {
             <li>
               <Link
                 href="/menu"
-                className="hover:text-orange-500 transition"
+                className="hover:text-orange-500 transition-all duration-300 ease-in-out"
               >
                 Menu
               </Link>
@@ -87,17 +87,8 @@ export default function Navbar() {
 
             <li>
               <Link
-                href="/gallery"
-                className="hover:text-orange-500 transition"
-              >
-                Gallery
-              </Link>
-            </li>
-
-            <li>
-              <Link
                 href="/about"
-                className="hover:text-orange-500 transition"
+                className="hover:text-orange-500 transition-all duration-300 ease-in-out"
               >
                 About
               </Link>
@@ -106,7 +97,7 @@ export default function Navbar() {
             <li>
               <Link
                 href="/contact"
-                className="hover:text-orange-500 transition"
+                className="hover:text-orange-500 transition-all duration-300 ease-in-out"
               >
                 Contact
               </Link>
@@ -200,7 +191,7 @@ export default function Navbar() {
           ) : (
             <button
               onClick={handleLogin}
-              className="bg-orange-500 px-5 py-2 rounded-lg text-white"
+              className="bg-orange-500 px-5 py-2 rounded-lg text-white cursor-pointer  transition-all duration-300 ease-in-out hover:scale-105 hover:bg-orange-600 active:scale-95"
             >
               Login
             </button>

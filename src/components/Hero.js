@@ -158,11 +158,18 @@
 
 import React from "react";
 import { Bonheur_Royale } from "next/font/google";
+import { Cinzel } from "next/font/google";
 
 
 const bonheurRoyale = Bonheur_Royale({
   subsets: ["latin"],
   weight: "400",
+});
+
+
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 const Hero = () => {
@@ -186,13 +193,25 @@ const Hero = () => {
       {/* Center Content */}
       <div className={`${bonheurRoyale.className} relative z-10 flex flex-col items-center justify-center w-full h-full px-4`}>
         <h1 className="text-white text-4xl md:text-6xl lg:text-9xl font-bold text-center text-shadow-md text-shadow-white">
-          Welcome to 
+          Welcome to
           <span className="text-orange-500 text-shadow-md text-shadow-orange-500">
             {" "}Tandoori Junction
           </span>
         </h1>
         <h3 className="text-5xl">The Taste of Royality</h3>
+
+        {/* Buttons */}
+        <div className="mt-8 flex flex-col sm:flex-row gap-4">
+          <button className={`${cinzel.className} px-8 py-3 bg-orange-500 text-white rounded-lg font-semibold transition-all duration-300 ease-in-out hover:bg-orange-600 hover:scale-105 active:scale-95 shadow-lg`}>
+            Order Now
+          </button>
+
+          <button className={`${cinzel.className} px-8 py-3 border-2 border-white text-white rounded-lg font-semibold transition-all duration-300 ease-in-out hover:bg-white hover:text-black hover:scale-105 active:scale-95`}>
+            View Menu
+          </button>
+        </div>
       </div>
+
     </section>
   );
 };
