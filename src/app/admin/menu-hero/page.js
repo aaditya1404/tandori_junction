@@ -82,8 +82,6 @@ export default function MenuHeroPage() {
 
   return (
 
-    return (
-
   <div
     className="
     min-h-screen
