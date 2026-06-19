@@ -5,16 +5,24 @@ import {
   useEffect,
   useState,
 } from "react";
-
+import { useRouter } from "next/navigation";
 import {
   getBestSellers,
 } from "@/services/analyticsService";
+import {
+  useCart,
+} from "@/context/CartContext";
 
 export default function BestSellers() {
 
   const [bestSellers,
     setBestSellers] =
     useState([]);
+    const {
+  addToCart,
+} = useCart();
+    const router = useRouter();
+    
 
   useEffect(() => {
 
@@ -135,16 +143,24 @@ export default function BestSellers() {
                       ₹{dish.price || 0}
                     </span>
 
-                    <button
-                      className="
-                      bg-orange-600
-                      px-4
-                      py-2
-                      rounded-lg
-                      "
-                    >
-                      Order
-                    </button>
+                   <button
+  onClick={() =>{
+     console.log(dish);
+
+
+    addToCart(dish);
+  }}
+  className="
+  bg-orange-600
+  hover:bg-orange-700
+  px-4
+  py-2
+  rounded-lg
+  transition
+  "
+>
+  Add To Cart
+</button>
 
                   </div>
 
