@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import { signInWithGoogle, logoutUser } from "@/services/authService";
 import { useCart } from "@/context/CartContext";
+import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Fonts imports
 import { Bonheur_Royale } from "next/font/google";
@@ -85,7 +87,7 @@ export default function Navbar() {
               </Link>
             </li>
 
-            
+
 
             <li>
               <Link
@@ -109,9 +111,13 @@ export default function Navbar() {
           {/* Hamburger Button (Mobile Only) */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-white text-3xl"
+            className="md:hidden text-white p-2 transition-all duration-300"
           >
-            ☰
+            {mobileMenuOpen ? (
+              <X size={32} />
+            ) : (
+              <Menu size={32} />
+            )}
           </button>
 
           {/* Desktop User Login / Logout Section */}
@@ -193,7 +199,7 @@ export default function Navbar() {
           ) : (
             <button
               onClick={handleLogin}
-              className="bg-orange-500 px-5 py-2 rounded-lg text-white cursor-pointer  transition-all duration-300 ease-in-out hover:scale-105 hover:bg-orange-600 active:scale-95"
+              className="hidden lg:block bg-orange-500 px-5 py-2 rounded-lg text-white cursor-pointer  transition-all duration-300 ease-in-out hover:scale-105 hover:bg-orange-600 active:scale-95"
             >
               Login
             </button>
@@ -201,8 +207,8 @@ export default function Navbar() {
 
         </div>
 
-        {mobileMenuOpen && (
-          <div className="fixed w-full md:hidden bg-zinc-950 border-b border-zinc-800">
+        {/* {mobileMenuOpen && (
+          <div className="fixed w-full md:hidden border-b border-zinc-800 bg-black/50 backdrop-blur-md">
             <div className="flex flex-col px-6 py-5 space-y-4 text-white">
 
               <Link
@@ -301,7 +307,132 @@ export default function Navbar() {
               )}
             </div>
           </div>
-        )}
+        )} */}
+
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{
+                height: 0,
+                opacity: 0,
+              }}
+              animate={{
+                height: "auto",
+                opacity: 1,
+              }}
+              exit={{
+                height: 0,
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.35,
+                ease: "easeInOut",
+              }}
+              className="fixed w-full overflow-hidden md:hidden border-b border-zinc-800 bg-black/50 backdrop-blur-md"
+            >
+              <div className="flex flex-col px-6 py-5 space-y-4 text-white">
+
+                {/* 👇 Paste everything that was inside your old menu here */}
+
+                <Link
+                  href="/menu"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Menu
+                </Link>
+
+                <Link
+                  href="/gallery"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Gallery
+                </Link>
+
+                <Link
+                  href="/about"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  About
+                </Link>
+
+                <Link
+                  href="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Contact
+                </Link>
+
+                {user ? (
+                  <>
+                    <hr className="border-zinc-700" />
+
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={user.photoURL || "/images/user/user.png"}
+                        alt="Profile"
+                        width={45}
+                        height={45}
+                        className="rounded-full border border-orange-500"
+                      />
+
+                      <div>
+                        <p>{user.displayName}</p>
+                        <p className="text-sm text-zinc-400">
+                          {user.email}
+                        </p>
+                      </div>
+                    </div>
+
+                    <Link
+                      href="/my-orders"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      📦 My Orders
+                    </Link>
+
+                    <Link
+                      href="/profile"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      👤 Profile
+                    </Link>
+
+                    <button
+                      onClick={() => {
+                        setCartOpen(true);
+                        setMobileMenuOpen(false);
+                      }}
+                      className="text-left"
+                    >
+                      🛒 Open Cart ({totalCartItems})
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="bg-red-500 py-2 rounded-lg"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => {
+                      handleLogin();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="bg-orange-500 py-2 rounded-lg"
+                  >
+                    Login
+                  </button>
+                )}
+
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </nav>
       <NotificationDrawer
