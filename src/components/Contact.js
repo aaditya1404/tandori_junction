@@ -1,5 +1,52 @@
+"use client";
+
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  getRestaurantInfo,
+} from "@/services/settingsService";
+
 export default function Contact() {
+
+  const [info,
+    setInfo] =
+    useState(null);
+
+  useEffect(() => {
+
+    loadData();
+
+  }, []);
+
+  const loadData =
+    async () => {
+
+      const result =
+        await getRestaurantInfo();
+
+      if (
+        result.success
+      ) {
+
+        setInfo(
+          result.data
+        );
+
+      }
+
+    };
+
+  if (!info) {
+
+    return null;
+
+  }
+
   return (
+
     <section className="py-24 bg-black text-white">
 
       <div className="max-w-4xl mx-auto px-6">
@@ -11,15 +58,19 @@ export default function Contact() {
         <div className="space-y-6 text-center">
 
           <p>
-            📍 Ranaghat, West Bengal
+            📍 {info.address}
           </p>
 
           <p>
-            📞 +91 9876543210
+            📞 {info.phone}
           </p>
 
           <p>
-            ✉️ restaurant@gmail.com
+            ✉️ {info.email}
+          </p>
+
+          <p>
+            ⏰ {info.openingHours}
           </p>
 
         </div>
@@ -27,5 +78,7 @@ export default function Contact() {
       </div>
 
     </section>
+
   );
+
 }

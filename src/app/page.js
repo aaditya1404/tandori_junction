@@ -19,7 +19,7 @@ export default function Home() {
       <BestSellers />
       <AboutRestaurant/>
       <MenuSection />
-      <Gallery />
+     {/* <Gallery /> */}
       <Testimonials />
       <Contact />
       <Footer />

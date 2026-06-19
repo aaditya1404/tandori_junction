@@ -85,14 +85,14 @@ export default function Navbar() {
               </Link>
             </li>
 
-            <li>
+            {/* <li>
               <Link
                 href="/gallery"
                 className="hover:text-orange-500 transition"
               >
                 Gallery
               </Link>
-            </li>
+            </li> */}
 
             <li>
               <Link
