@@ -168,11 +168,15 @@ export default function AuthProvider({ children }) {
                 // Store full Firestore user in Redux
                 dispatch(setUser(userData));
 
+                const isAdmin =
+                    userData.role === "admin" || userData.role === "superadmin";
+
                 const profileComplete =
                     !!userData.username && !!userData.phoneNumber;
 
                 // Incomplete profile -> redirect to complete-profile
                 if (
+                    !isAdmin &&
                     !profileComplete &&
                     pathname !== "/complete-profile"
                 ) {
