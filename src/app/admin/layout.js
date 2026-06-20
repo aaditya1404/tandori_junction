@@ -4,10 +4,17 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 
-export default function AdminLayout({ children }) {
+import AdminOrderAlert from "@/components/admin/AdminOrderAlert";
+
+export default function AdminLayout({
+  children,
+}) {
   const router = useRouter();
 
-  const { user, loading } = useSelector((state) => state.auth);
+  const { user, loading } =
+    useSelector(
+      (state) => state.auth
+    );
 
   useEffect(() => {
     if (loading) return;
@@ -17,7 +24,9 @@ export default function AdminLayout({ children }) {
       return;
     }
 
-    if (user.role !== "superadmin") {
+    if (
+      user.role !== "superadmin"
+    ) {
       router.replace("/");
     }
   }, [user, loading, router]);
@@ -30,5 +39,17 @@ export default function AdminLayout({ children }) {
     );
   }
 
-  return children;
+  if (
+    !user ||
+    user.role !== "superadmin"
+  ) {
+    return null;
+  }
+
+  return (
+    <>
+      <AdminOrderAlert />
+      {children}
+    </>
+  );
 }
