@@ -315,3 +315,45 @@ export const getNextOrderNumber =
   )}`;
 
 };
+export const subscribeToAllOrders =
+  (callback) => {
+
+    return onSnapshot(
+      collection(db, "orders"),
+
+      (snapshot) => {
+
+        const orders =
+          snapshot.docs.map(
+            (doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })
+          );
+
+        callback(orders);
+
+      }
+    );
+
+  };
+  export const markReviewSubmitted =
+  async (orderId) => {
+    try {
+      await updateDoc(
+        doc(db, "orders", orderId),
+        {
+          reviewSubmitted: true,
+        }
+      );
+
+      return {
+        success: true,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  };

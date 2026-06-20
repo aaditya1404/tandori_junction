@@ -20,6 +20,9 @@ import {
 import {
   getTopSellingItems,
 } from "@/services/analyticsService";
+import {
+  getRatingStats,
+} from "@/services/reviewService";
 
 export default function MenuPage() {
   const [search, setSearch] = useState("");

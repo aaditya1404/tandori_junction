@@ -198,10 +198,10 @@ const Hero = () => {
             {" "}Tandoori Junction
           </span>
         </h1>
-        <h3 className="text-5xl">The Taste of Royality</h3>
+        <h3 className="text-5xl text-white">The Taste of Royality</h3>
 
         {/* Buttons */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-4">
+        <div className="mt-8 flex sm:flex-row gap-4">
           <button className={`${cinzel.className} px-8 py-3 bg-orange-500 text-white rounded-lg font-semibold transition-all duration-300 ease-in-out hover:bg-orange-600 hover:scale-105 active:scale-95 shadow-lg`}>
             Order Now
           </button>
