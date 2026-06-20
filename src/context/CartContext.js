@@ -1,16 +1,30 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+} from "react";
 
-const CartContext = createContext();
+const CartContext =
+  createContext();
 
-export function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
-  const [cartOpen, setCartOpen] = useState(false);
+export function CartProvider({
+  children,
+}) {
+  const [cart, setCart] =
+    useState([]);
+
+  const [cartOpen, setCartOpen] =
+    useState(false);
 
   const addToCart = (item) => {
-    if (!item.isAvailable) {
-      alert("This item is currently unavailable");
+    if (
+      item.isAvailable === false
+    ) {
+      alert(
+        "This item is currently unavailable"
+      );
       return;
     }
 
@@ -24,7 +38,8 @@ export function CartProvider({ children }) {
           i.name === item.name
             ? {
                 ...i,
-                quantity: i.quantity + 1,
+                quantity:
+                  i.quantity + 1,
               }
             : i
         )
@@ -46,7 +61,8 @@ export function CartProvider({ children }) {
         item.name === name
           ? {
               ...item,
-              quantity: item.quantity + 1,
+              quantity:
+                item.quantity + 1,
             }
           : item
       )
@@ -60,11 +76,15 @@ export function CartProvider({ children }) {
           item.name === name
             ? {
                 ...item,
-                quantity: item.quantity - 1,
+                quantity:
+                  item.quantity - 1,
               }
             : item
         )
-        .filter((item) => item.quantity > 0)
+        .filter(
+          (item) =>
+            item.quantity > 0
+        )
     );
   };
 
@@ -72,10 +92,12 @@ export function CartProvider({ children }) {
     setCart([]);
   };
 
-  const totalCartItems = cart.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
+  const totalCartItems =
+    cart.reduce(
+      (sum, item) =>
+        sum + item.quantity,
+      0
+    );
 
   return (
     <CartContext.Provider
