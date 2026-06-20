@@ -26,27 +26,28 @@ export const createOrder = async (
 ) => {
   try {
     const docRef = await addDoc(
-  collection(db, "orders"),
-  {
-    ...orderData,
+      collection(db, "orders"),
+      {
+        ...orderData,
 
-    orderType:
-      "delivery",
+        orderType: "delivery",
 
-    status: "pending",
+        status: "pending",
 
-    createdAt:
-      serverTimestamp(),
+        isNewForAdmin: true,
 
-    orderDate:
-      new Date()
-        .toLocaleDateString(),
+        reviewSubmitted: false,
 
-    orderTime:
-      new Date()
-        .toLocaleTimeString(),
-  }
-);
+        createdAt:
+          serverTimestamp(),
+
+        orderDate:
+          new Date().toLocaleDateString(),
+
+        orderTime:
+          new Date().toLocaleTimeString(),
+      }
+    );
 
     return {
       success: true,
@@ -132,38 +133,31 @@ export const getAllOrders =
 
 };
 export const updateOrderStatus =
-  async (
-    orderId,
-    status
-  ) => {
-
-  try {
-
-    await updateDoc(
-      doc(
-        db,
-        "orders",
-        orderId
-      ),
-      {
+  async (orderId, status) => {
+    try {
+      const payload = {
         status,
+      };
+
+      if (status !== "pending") {
+        payload.isNewForAdmin = false;
       }
-    );
 
-    return {
-      success: true,
-    };
+      await updateDoc(
+        doc(db, "orders", orderId),
+        payload
+      );
 
-  } catch (error) {
-
-    return {
-      success: false,
-      error: error.message,
-    };
-
-  }
-
-};
+      return {
+        success: true,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  };
 export const getOrderById =
   async (orderId) => {
 

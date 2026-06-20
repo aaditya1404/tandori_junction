@@ -6,10 +6,17 @@ import { useSelector } from "react-redux";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminTopbar from "@/components/admin/AdminTopbar";
 
-export default function AdminLayout({ children }) {
+import AdminOrderAlert from "@/components/admin/AdminOrderAlert";
+
+export default function AdminLayout({
+  children,
+}) {
   const router = useRouter();
 
-  const { user, loading } = useSelector((state) => state.auth);
+  const { user, loading } =
+    useSelector(
+      (state) => state.auth
+    );
 
   useEffect(() => {
     if (loading) return;
@@ -19,7 +26,9 @@ export default function AdminLayout({ children }) {
       return;
     }
 
-    if (user.role !== "superadmin") {
+    if (
+      user.role !== "superadmin"
+    ) {
       router.replace("/");
     }
   }, [user, loading, router]);
@@ -32,8 +41,16 @@ export default function AdminLayout({ children }) {
     );
   }
 
+  if (
+    !user ||
+    user.role !== "superadmin"
+  ) {
+    return null;
+  }
+
   return (
     <div className="flex min-h-screen bg-black text-white">
+      <AdminOrderAlert />
       <AdminSidebar />
       <div className="flex-1 flex flex-col lg:ml-0">
         <AdminTopbar />
