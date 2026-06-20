@@ -10,12 +10,14 @@ export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
   const router = useRouter();
 
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    address: "",
-    payment: "cod",
-  });
+ const [form, setForm] = useState({
+  name: "",
+  phone: "",
+  address: "",
+  latitude: "",
+  longitude: "",
+  payment: "cod",
+});
 
   const total = cart.reduce(
     (sum, item) =>
@@ -38,15 +40,17 @@ export default function CheckoutPage() {
       return;
     }
 
-    const result = await createOrder({
-      userId: user.uid,
-      customerName: form.name,
-      phone: form.phone,
-      address: form.address,
-      paymentMethod: form.payment,
-      items: cart,
-      total,
-    });
+  const result = await createOrder({
+  userId: user.uid,
+  customerName: form.name,
+  phone: form.phone,
+  address: form.address,
+  latitude: form.latitude || "",
+  longitude: form.longitude || "",
+  paymentMethod: form.payment,
+  items: cart,
+  total,
+});
 
     if (result.success) {
       clearCart();
