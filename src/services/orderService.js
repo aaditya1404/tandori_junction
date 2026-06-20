@@ -357,3 +357,31 @@ export const subscribeToAllOrders =
       };
     }
   };
+  export const getDeliveredOrdersCount =
+  async () => {
+
+    try {
+
+      const q = query(
+        collection(db, "orders"),
+        where("status", "==", "delivered")
+      );
+
+      const snapshot =
+        await getDocs(q);
+
+      return {
+        success: true,
+        count: snapshot.size,
+      };
+
+    } catch (error) {
+
+      return {
+        success: false,
+        error: error.message,
+      };
+
+    }
+
+  };
