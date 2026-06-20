@@ -28,7 +28,7 @@ export const saveAddress = async (
       {
         ...addressData,
         isDefault: false,
-        createdAt: serverTimestamp(),
+        createdAt: new Date().toISOString(),
       }
     );
 

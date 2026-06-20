@@ -1,25 +1,17 @@
-import Navbar from "@/components/header/Navbar";
-import Hero from "@/components/Hero";
-import Categories from "@/components/Categories";
-import BestSellers from "@/components/BestSellers";
-import MenuSection from "@/components/MenuSection";
-import Gallery from "@/components/Gallery";
-import Testimonials from "@/components/Testimonials";
+import Hero from "@/components/homePage/Hero";
+import Categories from "@/components/homePage/Categories";
+import BestSellers from "@/components/homePage/BestSellers";
+import Testimonials from "@/components/homePage/Testimonials";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
-import WhatsappButton from "@/components/WhatsappButton";
-import AboutRestaurant from "@/components/AboutRestaurant";
+import WhatsappButton from "@/components/homePage/WhatsappButton";
 
 export default function Home() {
   return (
     <>
-      
       <Hero />
       <Categories />
       <BestSellers />
-      {/* <AboutRestaurant/> */}
-      {/* <MenuSection /> */}
-     {/* <Gallery /> */}
       <Testimonials />
       <Contact />
       <Footer />

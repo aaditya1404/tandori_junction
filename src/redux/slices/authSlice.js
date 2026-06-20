@@ -1,3 +1,43 @@
+// import { createSlice } from "@reduxjs/toolkit";
+
+// const initialState = {
+//   user: null,
+//   loading: true,
+//   profileCompleted: false,
+// };
+
+// const authSlice = createSlice({
+//   name: "auth",
+
+//   initialState,
+
+//   reducers: {
+//     setUser: (state, action) => {
+//       state.user = action.payload;
+//       state.loading = false;
+//     },
+
+//     setIncompleteUser: (state, action) => {
+//       state.user = action.payload;
+//       state.loading = false;
+//       state.profileCompleted = false;
+//     },
+
+//     clearUser: (state) => {
+//       state.user = null;
+//       state.loading = false;
+//     },
+//   },
+// });
+
+// export const {
+//   setUser,
+//   setIncompleteUser,
+//   clearUser,
+// } = authSlice.actions;
+
+// export default authSlice.reducer;
+
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -20,17 +60,12 @@ const authSlice = createSlice({
       state.user = null;
       state.loading = false;
     },
-
-    // setLoading: (state, action) => {
-    //   state.loading = action.payload;
-    // },
   },
 });
 
 export const {
   setUser,
   clearUser,
-//   setLoading,
 } = authSlice.actions;
 
 export default authSlice.reducer;

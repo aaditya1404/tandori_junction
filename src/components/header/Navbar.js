@@ -9,6 +9,7 @@ import { signInWithGoogle, logoutUser } from "@/services/authService";
 import { useCart } from "@/context/CartContext";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 // Fonts imports
 import { Bonheur_Royale } from "next/font/google";
@@ -26,6 +27,8 @@ const bonheurRoyale = Bonheur_Royale({
 
 export default function Navbar() {
 
+  const router = useRouter();
+
   const user = useSelector((state) => state.auth.user);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const { totalCartItems, setCartOpen, } = useCart();
@@ -38,6 +41,13 @@ export default function Navbar() {
 
     if (!result.success) {
       alert(result.error);
+      return;
+    }
+
+    if (!result.profileComplete) {
+      router.replace("/complete-profile");
+    } else {
+      router.replace("/");
     }
   };
 
