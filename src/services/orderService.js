@@ -315,3 +315,73 @@ export const getNextOrderNumber =
   )}`;
 
 };
+export const subscribeToAllOrders =
+  (callback) => {
+
+    return onSnapshot(
+      collection(db, "orders"),
+
+      (snapshot) => {
+
+        const orders =
+          snapshot.docs.map(
+            (doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })
+          );
+
+        callback(orders);
+
+      }
+    );
+
+  };
+  export const markReviewSubmitted =
+  async (orderId) => {
+    try {
+      await updateDoc(
+        doc(db, "orders", orderId),
+        {
+          reviewSubmitted: true,
+        }
+      );
+
+      return {
+        success: true,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  };
+  export const getDeliveredOrdersCount =
+  async () => {
+
+    try {
+
+      const q = query(
+        collection(db, "orders"),
+        where("status", "==", "delivered")
+      );
+
+      const snapshot =
+        await getDocs(q);
+
+      return {
+        success: true,
+        count: snapshot.size,
+      };
+
+    } catch (error) {
+
+      return {
+        success: false,
+        error: error.message,
+      };
+
+    }
+
+  };

@@ -3,21 +3,13 @@
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-import { createOrder }
-from "@/services/orderService";
-
-import {
-  getCurrentUser,
-} from "@/services/authService";
+import { createOrder } from "@/services/orderService";
+import { getCurrentUser } from "@/services/authService";
 
 export default function CheckoutPage() {
-  const { cart } = useCart();
-const router = useRouter();
-const searchParams = useSearchParams();
+  const { cart, clearCart } = useCart();
+  const router = useRouter();
 
-const orderId =
-  searchParams.get("orderId");
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -31,65 +23,54 @@ const orderId =
     0
   );
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const user = getCurrentUser();
+    const user = getCurrentUser();
 
-  if (!user) {
-    alert("Please login first");
-    return;
-  }
+    if (!user) {
+      alert("Please login first");
+      return;
+    }
 
-  const result =
-    await createOrder({
+    if (cart.length === 0) {
+      alert("Your cart is empty");
+      return;
+    }
+
+    const result = await createOrder({
       userId: user.uid,
-
       customerName: form.name,
-
       phone: form.phone,
-
       address: form.address,
-
-      paymentMethod:
-        form.payment,
-
+      paymentMethod: form.payment,
       items: cart,
-
       total,
     });
 
-  if (result.success) {
+    if (result.success) {
+      clearCart();
 
-    router.push(
-      `/order-success?orderId=${result.orderId}`
-    );
-
-  } else {
-
-    alert(result.error);
-
-  }
-};
+      router.push(
+        `/order-success?orderId=${result.orderId}`
+      );
+    } else {
+      alert(result.error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="max-w-6xl mx-auto px-6 py-16">
-
         <h1 className="text-5xl font-bold mb-10">
           Checkout
         </h1>
 
         <div className="grid md:grid-cols-2 gap-10">
-
           {/* Form */}
           <form
             onSubmit={handleSubmit}
-            className="
-            bg-zinc-900
-            p-6
-            rounded-2xl
-            "
+            className="bg-zinc-900 p-6 rounded-2xl"
           >
             <h2 className="text-2xl font-bold mb-6">
               Delivery Details
@@ -105,13 +86,7 @@ const handleSubmit = async (e) => {
                   name: e.target.value,
                 })
               }
-              className="
-              w-full
-              p-4
-              mb-4
-              rounded-xl
-              bg-zinc-800
-              "
+              className="w-full p-4 mb-4 rounded-xl bg-zinc-800"
               required
             />
 
@@ -125,13 +100,7 @@ const handleSubmit = async (e) => {
                   phone: e.target.value,
                 })
               }
-              className="
-              w-full
-              p-4
-              mb-4
-              rounded-xl
-              bg-zinc-800
-              "
+              className="w-full p-4 mb-4 rounded-xl bg-zinc-800"
               required
             />
 
@@ -144,13 +113,7 @@ const handleSubmit = async (e) => {
                   address: e.target.value,
                 })
               }
-              className="
-              w-full
-              p-4
-              mb-4
-              rounded-xl
-              bg-zinc-800
-              "
+              className="w-full p-4 mb-4 rounded-xl bg-zinc-800"
               rows={4}
               required
             />
@@ -160,7 +123,6 @@ const handleSubmit = async (e) => {
             </h3>
 
             <div className="space-y-2 mb-6">
-
               <label className="block">
                 <input
                   type="radio"
@@ -176,7 +138,6 @@ const handleSubmit = async (e) => {
                     })
                   }
                 />
-
                 <span className="ml-2">
                   Cash on Delivery
                 </span>
@@ -197,54 +158,34 @@ const handleSubmit = async (e) => {
                     })
                   }
                 />
-
                 <span className="ml-2">
                   UPI Payment
                 </span>
               </label>
-
             </div>
 
- <button
-  type="submit"
-  className="
-  w-full
-  bg-orange-500
-  py-4
-  rounded-xl
-  font-bold
-  "
->
-  Place Order
-</button>
-
+            <button
+              type="submit"
+              className="w-full bg-orange-500 py-4 rounded-xl font-bold"
+            >
+              Place Order
+            </button>
           </form>
 
           {/* Order Summary */}
-          <div
-            className="
-            bg-zinc-900
-            p-6
-            rounded-2xl
-            "
-          >
+          <div className="bg-zinc-900 p-6 rounded-2xl">
             <h2 className="text-2xl font-bold mb-6">
               Order Summary
             </h2>
 
             <div className="space-y-4">
-
               {cart.map((item) => (
                 <div
                   key={item.name}
-                  className="
-                  flex
-                  justify-between
-                  "
+                  className="flex justify-between"
                 >
                   <span>
-                    {item.name} ×{" "}
-                    {item.quantity}
+                    {item.name} × {item.quantity}
                   </span>
 
                   <span>
@@ -254,37 +195,16 @@ const handleSubmit = async (e) => {
                   </span>
                 </div>
               ))}
-
             </div>
 
-            <div
-              className="
-              border-t
-              border-zinc-700
-              mt-6
-              pt-6
-              "
-            >
-              <div
-                className="
-                flex
-                justify-between
-                text-xl
-                font-bold
-                "
-              >
+            <div className="border-t border-zinc-700 mt-6 pt-6">
+              <div className="flex justify-between text-xl font-bold">
                 <span>Total</span>
-
-                <span>
-                  ₹{total}
-                </span>
+                <span>₹{total}</span>
               </div>
             </div>
-
           </div>
-
         </div>
-
       </div>
     </div>
   );

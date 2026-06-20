@@ -8,49 +8,37 @@ export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
 
- const addToCart = (item) => {
+  const addToCart = (item) => {
+    if (!item.isAvailable) {
+      alert("This item is currently unavailable");
+      return;
+    }
 
-  if (!item.isAvailable) {
-
-    alert(
-      "This item is currently unavailable"
+    const existing = cart.find(
+      (i) => i.name === item.name
     );
 
-    return;
-
-  }
-
-  const existing = cart.find(
-    (i) => i.name === item.name
-  );
-
-  if (existing) {
-
-    setCart(
-      cart.map((i) =>
-        i.name === item.name
-          ? {
-              ...i,
-              quantity:
-                i.quantity + 1,
-            }
-          : i
-      )
-    );
-
-  } else {
-
-    setCart([
-      ...cart,
-      {
-        ...item,
-        quantity: 1,
-      },
-    ]);
-
-  }
-
-};
+    if (existing) {
+      setCart(
+        cart.map((i) =>
+          i.name === item.name
+            ? {
+                ...i,
+                quantity: i.quantity + 1,
+              }
+            : i
+        )
+      );
+    } else {
+      setCart([
+        ...cart,
+        {
+          ...item,
+          quantity: 1,
+        },
+      ]);
+    }
+  };
 
   const increaseQty = (name) => {
     setCart(
@@ -80,6 +68,10 @@ export function CartProvider({ children }) {
     );
   };
 
+  const clearCart = () => {
+    setCart([]);
+  };
+
   const totalCartItems = cart.reduce(
     (sum, item) => sum + item.quantity,
     0
@@ -92,9 +84,8 @@ export function CartProvider({ children }) {
         addToCart,
         increaseQty,
         decreaseQty,
+        clearCart,
         totalCartItems,
-
-        // Drawer State
         cartOpen,
         setCartOpen,
       }}
