@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
+import AdminSidebar from "@/components/admin/AdminSidebar";
+import AdminTopbar from "@/components/admin/AdminTopbar";
 
 export default function AdminLayout({ children }) {
   const router = useRouter();
@@ -30,5 +32,16 @@ export default function AdminLayout({ children }) {
     );
   }
 
-  return children;
+  return (
+    <div className="flex min-h-screen bg-black text-white">
+      <AdminSidebar />
+      <div className="flex-1 flex flex-col lg:ml-0">
+        <AdminTopbar />
+
+        <main className="flex-1 overflow-y-auto bg-[#050505]">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
 }

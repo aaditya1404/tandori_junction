@@ -4,7 +4,6 @@ import AuthProvider from "@/providers/AuthProvider";
 import { CartProvider } from "@/context/CartContext";
 import CartDrawer from "@/components/CartDrawer";
 import FloatingCartButton from "@/components/FloatingCartButton";
-import Navbar from "@/components/header/Navbar";
 
 export const metadata = {
   title: "Tandoori Junction",
@@ -21,7 +20,6 @@ export default function RootLayout({ children }) {
         <ReduxProvider>
           <AuthProvider>
             <CartProvider>
-              <Navbar />
               {children}
                <FloatingCartButton />
               <CartDrawer />
