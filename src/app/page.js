@@ -17,8 +17,8 @@ export default function Home() {
       <Hero />
       <Categories />
       <BestSellers />
-      <AboutRestaurant/>
-      <MenuSection />
+      {/* <AboutRestaurant/> */}
+      {/* <MenuSection /> */}
      {/* <Gallery /> */}
       <Testimonials />
       <Contact />
