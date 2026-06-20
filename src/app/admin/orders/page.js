@@ -55,6 +55,8 @@ const previousOrderIdsRef =
 
 const hasMountedRef =
   useRef(false);
+  const [selectedOrder, setSelectedOrder] =
+  useState(null);
 
 const [newOrderIds, setNewOrderIds] =
   useState([]);
@@ -198,20 +200,29 @@ const [newOrderIds, setNewOrderIds] =
 }, [filteredAndSortedOrders]);
 
   const handleStatusChange = async (
-    orderId,
-    status
-  ) => {
-    try {
-      setUpdatingId(orderId);
+  orderId,
+  status
+) => {
+  try {
+    setUpdatingId(orderId);
 
-      await updateOrderStatus(
-        orderId,
-        status
-      );
-    } finally {
-      setUpdatingId("");
-    }
-  };
+    await updateOrderStatus(
+      orderId,
+      status
+    );
+
+    setSelectedOrder((prev) =>
+      prev && prev.id === orderId
+        ? {
+            ...prev,
+            status,
+          }
+        : prev
+    );
+  } finally {
+    setUpdatingId("");
+  }
+};
 
   const getStatusBadgeClass = (status) => {
     switch (status) {
@@ -544,7 +555,7 @@ const [newOrderIds, setNewOrderIds] =
                               </div>
 
                               {/* Address */}
-                              <div className="mt-4">
+                              {/* <div className="mt-4">
                                 <p className="text-xs text-zinc-400 mb-1">
                                   Address
                                 </p>
@@ -554,7 +565,7 @@ const [newOrderIds, setNewOrderIds] =
                                     order.address
                                   }
                                 </p>
-                              </div>
+                              </div> */}
 
                               {/* Items */}
                               <div className="mt-4">
@@ -594,64 +605,69 @@ const [newOrderIds, setNewOrderIds] =
                               </div>
 
                               {/* Bottom */}
-                              <div className="mt-4 pt-4 border-t border-zinc-800">
-                                <div className="flex items-center justify-between mb-3">
-                                  <p className="text-zinc-400 text-sm">
-                                    Total
-                                  </p>
+                             <div className="mt-4 pt-4 border-t border-zinc-800">
+  <div className="flex items-center justify-between mb-3">
+    <p className="text-zinc-400 text-sm">
+      Total
+    </p>
 
-                                  <p className="text-lg font-bold text-orange-400">
-                                    ₹
-                                    {
-                                      order.total
-                                    }
-                                  </p>
-                                </div>
+    <p className="text-lg font-bold text-orange-400">
+      ₹{order.total}
+    </p>
+  </div>
 
-                                <div className="flex flex-col gap-2">
-                                  {nextAction && (
-                                    <button
-                                      onClick={() =>
-                                        handleStatusChange(
-                                          order.id,
-                                          nextAction.nextStatus
-                                        )
-                                      }
-                                      disabled={
-                                        updatingId ===
-                                        order.id
-                                      }
-                                      className={`${nextAction.className} px-4 py-2 rounded-xl font-medium disabled:opacity-60`}
-                                    >
-                                      {updatingId ===
-                                      order.id
-                                        ? "Updating..."
-                                        : nextAction.label}
-                                    </button>
-                                  )}
+  <div className="flex flex-col gap-2">
+    <button
+      onClick={() =>
+        setSelectedOrder(order)
+      }
+      className="
+        w-full
+        bg-zinc-800
+        hover:bg-zinc-700
+        px-4
+        py-2
+        rounded-xl
+        font-medium
+      "
+    >
+      View Details
+    </button>
 
-                                  {order.status !==
-                                    "delivered" &&
-                                    order.status !==
-                                      "cancelled" && (
-                                      <button
-                                        onClick={() =>
-                                          handleStatusChange(
-                                            order.id,
-                                            "cancelled"
-                                          )
-                                        }
-                                        disabled={
-                                          updatingId ===
-                                          order.id
-                                        }
-                                        className="bg-red-500 px-4 py-2 rounded-xl font-medium disabled:opacity-60"
-                                      >
-                                        Cancel Order
-                                      </button>
-                                    )}
-                                </div>
-                              </div>
+    {nextAction && (
+      <button
+        onClick={() =>
+          handleStatusChange(
+            order.id,
+            nextAction.nextStatus
+          )
+        }
+        disabled={updatingId === order.id}
+        className={`${nextAction.className} px-4 py-2 rounded-xl font-medium disabled:opacity-60`}
+      >
+        {updatingId === order.id
+          ? "Updating..."
+          : nextAction.label}
+      </button>
+    )}
+
+    {order.status !== "delivered" &&
+      order.status !== "cancelled" && (
+        <button
+          onClick={() =>
+            handleStatusChange(
+              order.id,
+              "cancelled"
+            )
+          }
+          disabled={updatingId === order.id}
+          className="bg-red-500 px-4 py-2 rounded-xl font-medium disabled:opacity-60"
+        >
+          Cancel Order
+        </button>
+      )}
+  </div>
+</div>
                             </div>
                           );
                         }
@@ -664,6 +680,223 @@ const [newOrderIds, setNewOrderIds] =
           </div>
         )}
       </div>
+         {selectedOrder && (
+  <div className="fixed inset-0 z-50 flex justify-end bg-black/60">
+    <div className="w-full max-w-2xl h-full bg-zinc-950 border-l border-zinc-800 overflow-y-auto">
+      {/* Header */}
+      <div className="sticky top-0 z-10 bg-zinc-950 border-b border-zinc-800 px-6 py-5 flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">
+            Order Details
+          </h2>
+          <p className="text-zinc-400 mt-1">
+            #{selectedOrder.id}
+          </p>
+        </div>
+
+        <button
+          onClick={() =>
+            setSelectedOrder(null)
+          }
+          className="bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-xl"
+        >
+          Close
+        </button>
+      </div>
+
+      <div className="p-6 space-y-6">
+        {/* Order Summary */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+          <h3 className="text-lg font-bold mb-4">
+            Order Summary
+          </h3>
+
+          <div className="grid sm:grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-zinc-400">
+                Customer Name
+              </p>
+              <p className="mt-1 font-medium">
+                {selectedOrder.customerName}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-zinc-400">
+                Phone
+              </p>
+              <p className="mt-1 font-medium">
+                {selectedOrder.phone}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-zinc-400">
+                Payment Method
+              </p>
+              <p className="mt-1 font-medium">
+                {selectedOrder.paymentMethod}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-zinc-400">
+                Status
+              </p>
+              <p className="mt-1 font-medium">
+                {selectedOrder.status}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-zinc-400">
+                Order Type
+              </p>
+              <p className="mt-1 font-medium">
+                {selectedOrder.orderType || "delivery"}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-zinc-400">
+                Order Time
+              </p>
+              <p className="mt-1 font-medium">
+                {formatOrderTime(
+                  selectedOrder
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Delivery Address */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+          <h3 className="text-lg font-bold mb-3">
+            Delivery Address
+          </h3>
+
+          <p className="text-zinc-300 leading-7">
+            {selectedOrder.address}
+          </p>
+        </div>
+
+        {/* Ordered Items */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+          <h3 className="text-lg font-bold mb-4">
+            Ordered Items
+          </h3>
+
+          <div className="space-y-3">
+            {selectedOrder.items?.map(
+              (item, index) => (
+                <div
+                  key={`${selectedOrder.id}-${item.name}-${index}`}
+                  className="flex justify-between items-start gap-3 border-b border-zinc-800 pb-3"
+                >
+                  <div>
+                    <p className="font-medium">
+                      {item.name}
+                    </p>
+                    <p className="text-sm text-zinc-400 mt-1">
+                      Quantity: {item.quantity}
+                    </p>
+                  </div>
+
+                  <p className="font-semibold whitespace-nowrap">
+                    ₹
+                    {item.price *
+                      item.quantity}
+                  </p>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+
+        {/* Total */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex items-center justify-between">
+          <p className="text-lg font-semibold">
+            Total Amount
+          </p>
+
+          <p className="text-2xl font-bold text-orange-400">
+            ₹{selectedOrder.total}
+          </p>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+          <h3 className="text-lg font-bold mb-4">
+            Update Order Status
+          </h3>
+
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() =>
+                handleStatusChange(
+                  selectedOrder.id,
+                  "pending"
+                )
+              }
+              className="bg-yellow-500 px-4 py-2 rounded-xl"
+            >
+              Pending
+            </button>
+
+            <button
+              onClick={() =>
+                handleStatusChange(
+                  selectedOrder.id,
+                  "preparing"
+                )
+              }
+              className="bg-blue-500 px-4 py-2 rounded-xl"
+            >
+              Preparing
+            </button>
+
+            <button
+              onClick={() =>
+                handleStatusChange(
+                  selectedOrder.id,
+                  "out_for_delivery"
+                )
+              }
+              className="bg-purple-500 px-4 py-2 rounded-xl"
+            >
+              Out For Delivery
+            </button>
+
+            <button
+              onClick={() =>
+                handleStatusChange(
+                  selectedOrder.id,
+                  "delivered"
+                )
+              }
+              className="bg-green-500 px-4 py-2 rounded-xl"
+            >
+              Delivered
+            </button>
+
+            <button
+              onClick={() =>
+                handleStatusChange(
+                  selectedOrder.id,
+                  "cancelled"
+                )
+              }
+              className="bg-red-500 px-4 py-2 rounded-xl"
+            >
+              Cancelled
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }
