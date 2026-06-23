@@ -57,6 +57,10 @@ const STATUS_COLUMNS = [
 ];
 
 export default function AdminOrdersPage() {
+
+  const [activeStatus, setActiveStatus] =
+    useState("pending");
+
   const [orders, setOrders] =
     useState([]);
 
@@ -88,6 +92,26 @@ export default function AdminOrdersPage() {
   const filteredAndSortedOrders =
     useMemo(() => {
       let data = [...orders];
+
+      // Show only today's orders
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      data = data.filter((order) => {
+        if (!order.createdAt?.seconds) return false;
+
+        const orderDate = new Date(
+          order.createdAt.seconds * 1000
+        );
+
+        return (
+          orderDate >= today &&
+          orderDate < tomorrow
+        );
+      });
 
       const normalizedSearch =
         search
@@ -128,9 +152,9 @@ export default function AdminOrdersPage() {
         data = data.filter(
           (order) =>
             order.status !==
-              "delivered" &&
+            "delivered" &&
             order.status !==
-              "cancelled"
+            "cancelled"
         );
       }
 
@@ -144,62 +168,62 @@ export default function AdminOrdersPage() {
         return bTime - aTime;
       });
     }, [orders, search, showOnlyActive]);
-const handleCallCustomer = (
-  phone
-) => {
-  if (!phone) {
-    alert("Phone number not available");
-    return;
-  }
+  const handleCallCustomer = (
+    phone
+  ) => {
+    if (!phone) {
+      alert("Phone number not available");
+      return;
+    }
 
-  window.location.href = `tel:${phone}`;
-};
+    window.location.href = `tel:${phone}`;
+  };
 
-const handleCopyAddress = async (
-  address
-) => {
-  if (!address) {
-    alert("Address not available");
-    return;
-  }
+  const handleCopyAddress = async (
+    address
+  ) => {
+    if (!address) {
+      alert("Address not available");
+      return;
+    }
 
-  try {
-    await navigator.clipboard.writeText(
-      address
-    );
+    try {
+      await navigator.clipboard.writeText(
+        address
+      );
 
-    alert("Address copied");
-  } catch {
-    alert("Unable to copy address");
-  }
-};
+      alert("Address copied");
+    } catch {
+      alert("Unable to copy address");
+    }
+  };
 
-const handleOpenLocation = (
-  latitude,
-  longitude,
-  address
-) => {
-  if (latitude && longitude) {
-    window.open(
-      `https://www.google.com/maps?q=${latitude},${longitude}`,
-      "_blank"
-    );
-    return;
-  }
+  const handleOpenLocation = (
+    latitude,
+    longitude,
+    address
+  ) => {
+    if (latitude && longitude) {
+      window.open(
+        `https://www.google.com/maps?q=${latitude},${longitude}`,
+        "_blank"
+      );
+      return;
+    }
 
-  if (address) {
-    const encodedAddress =
-      encodeURIComponent(address);
+    if (address) {
+      const encodedAddress =
+        encodeURIComponent(address);
 
-    window.open(
-      `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`,
-      "_blank"
-    );
-    return;
-  }
+      window.open(
+        `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`,
+        "_blank"
+      );
+      return;
+    }
 
-  alert("Location not available");
-};
+    alert("Location not available");
+  };
   const groupedOrders =
     useMemo(() => {
       return {
@@ -244,8 +268,15 @@ const handleOpenLocation = (
               order.status ===
               "cancelled"
           ),
+
+
       };
     }, [filteredAndSortedOrders]);
+
+  const activeOrders =
+    groupedOrders[
+    activeStatus
+    ] || [];
 
   const handleStatusChange =
     async (
@@ -264,25 +295,25 @@ const handleOpenLocation = (
         if (!result.success) {
           alert(
             result.error ||
-              "Failed to update order status"
+            "Failed to update order status"
           );
           return;
         }
 
         setSelectedOrder((prev) =>
           prev &&
-          prev.id === orderId
+            prev.id === orderId
             ? {
-                ...prev,
-                status,
-                ...(status !==
+              ...prev,
+              status,
+              ...(status !==
                 "pending"
-                  ? {
-                      isNewForAdmin:
-                        false,
-                    }
-                  : {}),
-              }
+                ? {
+                  isNewForAdmin:
+                    false,
+                }
+                : {}),
+            }
             : prev
         );
       } finally {
@@ -373,7 +404,7 @@ const handleOpenLocation = (
     ) {
       return new Date(
         order.createdAt.seconds *
-          1000
+        1000
       ).toLocaleString();
     }
 
@@ -411,25 +442,25 @@ const handleOpenLocation = (
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <div className="max-w-[2200px] mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
         {/* Header */}
         <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 mb-10">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold">
+            <h1 className="text-2xl lg:text-4xl md:text-5xl font-bold">
               Live Orders Board
             </h1>
 
-            <p className="text-zinc-400 mt-2">
+            <p className="text-zinc-400 lg:mt-2 mt-1 sm:text-sm">
               Manage all restaurant orders in real time
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3">
-              <p className="text-zinc-400 text-sm">
+          <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-2">
+              <p className="text-zinc-500 text-[10px] md:text-sm truncate">
                 Total Orders
               </p>
-              <p className="text-2xl font-bold">
+              <p className="text-lg md:text-2xl font-bold">
                 {
                   filteredAndSortedOrders.length
                 }
@@ -488,7 +519,7 @@ const handleOpenLocation = (
         </div>
 
         {/* Search + Filter */}
-        <div className="mb-8 flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
+        <div className=" mb-8 flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
           <input
             type="text"
             placeholder="Search by Order ID / Customer Name / Phone"
@@ -531,302 +562,110 @@ const handleOpenLocation = (
         </div>
 
         {/* Empty State */}
-        {orders.length === 0 && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-10 text-center">
-            No Orders Found
+        <div className="mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+            {STATUS_COLUMNS.map((status) => {
+              const count =
+                groupedOrders[status.key]
+                  ?.length || 0;
+
+              return (
+                <button
+                  key={status.key}
+                  onClick={() => setActiveStatus(status.key)}
+                  className={`
+    py-3 px-2
+    rounded-xl
+    text-sm
+    font-medium
+    transition-all
+    ${activeStatus === status.key
+                      ? `${status.color} text-white`
+                      : "bg-zinc-900 border border-zinc-800 text-zinc-400"
+                    }
+  `}
+                >
+                  <div>{status.title}</div>
+                  <div className="text-xs mt-1">
+                    ({count})
+                  </div>
+                </button>
+              );
+            })}
           </div>
-        )}
+        </div>
 
         {/* Order Columns */}
         {orders.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-6 gap-5 items-start">
-            {STATUS_COLUMNS.map(
-              (column) => {
-                const columnOrders =
-                  groupedOrders[
-                    column.key
-                  ] || [];
+          <div className="space-y-4">
+            {activeOrders.map(
+              (order) => {
+                const nextAction =
+                  getNextAction(
+                    order.status
+                  );
 
                 return (
                   <div
-                    key={column.key}
-                    className="bg-zinc-950 border border-zinc-800 rounded-2xl p-4 min-h-[500px]"
+                    key={order.id}
+                    className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
                   >
-                    {/* Column Header */}
-                    <div className="flex items-center justify-between mb-4 sticky top-0 bg-zinc-950 z-10 pb-3">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`w-3 h-3 rounded-full ${column.color}`}
-                        />
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h3 className="font-bold text-lg">
+                          #{order.id}
+                        </h3>
 
-                        <h2 className="text-lg font-bold">
-                          {
-                            column.title
-                          }
-                        </h2>
+                        <p className="text-zinc-400 text-sm">
+                          {order.customerName}
+                        </p>
+
+                        <p className="text-zinc-500 text-xs">
+                          {formatOrderTime(
+                            order
+                          )}
+                        </p>
                       </div>
 
-                      <span className="bg-zinc-800 text-sm px-3 py-1 rounded-full">
-                        {
-                          columnOrders.length
-                        }
-                      </span>
+                      <div className="text-right">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs ${getStatusBadgeClass(
+                            order.status
+                          )}`}
+                        >
+                          {order.status}
+                        </span>
+
+                        <p className="text-orange-400 font-bold mt-2">
+                          ₹{order.total}
+                        </p>
+                      </div>
                     </div>
 
-                    {/* Orders */}
-                    <div className="space-y-4">
-                      {columnOrders.length ===
-                        0 && (
-                        <div className="text-zinc-500 text-sm bg-zinc-900 rounded-xl p-4 border border-zinc-800">
-                          {
-                            column.emptyText
-                          }
-                        </div>
-                      )}
-
-                      {columnOrders.map(
-                        (order) => {
-                          const nextAction =
-                            getNextAction(
-                              order.status
-                            );
-
-                          const showNewBadge =
-                            order.isNewForAdmin &&
-                            order.status ===
-                              "pending";
-
-                          return (
-                            <div
-                              key={order.id}
-                              className={`
-                                bg-zinc-900
-                                border
-                                rounded-2xl
-                                p-4
-                                ${
-                                  showNewBadge ||
-                                  isFreshPendingOrder(
-                                    order
-                                  )
-                                    ? "border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.25)]"
-                                    : "border-zinc-800"
-                                }
-                              `}
-                            >
-                              {/* Top */}
-                              <div className="flex items-start justify-between gap-3">
-                                <div>
-                                  <div className="flex items-center gap-2 flex-wrap">
-                                    <h3 className="font-bold text-base break-all">
-                                      #
-                                      {
-                                        order.id
-                                      }
-                                    </h3>
-
-                                    {showNewBadge && (
-                                      <span
-                                        className="
-                                        bg-red-500
-                                        text-white
-                                        text-[10px]
-                                        font-bold
-                                        px-2
-                                        py-1
-                                        rounded-full
-                                        animate-pulse
-                                      "
-                                      >
-                                        NEW
-                                      </span>
-                                    )}
-                                  </div>
-
-                                  <p className="text-zinc-400 text-sm mt-1">
-                                    {formatOrderTime(
-                                      order
-                                    )}
-                                  </p>
-                                </div>
-
-                                <span
-                                  className={`text-xs px-3 py-1 rounded-full ${getStatusBadgeClass(
-                                    order.status
-                                  )}`}
-                                >
-                                  {
-                                    order.status
-                                  }
-                                </span>
-                              </div>
-
-                              {/* Customer */}
-                              <div className="mt-4 space-y-1 text-sm">
-                                <p>
-                                  <span className="text-zinc-400">
-                                    Customer:
-                                  </span>{" "}
-                                  {
-                                    order.customerName
-                                  }
-                                </p>
-
-                                <p>
-                                  <span className="text-zinc-400">
-                                    Phone:
-                                  </span>{" "}
-                                  {
-                                    order.phone
-                                  }
-                                </p>
-
-                                <p>
-                                  <span className="text-zinc-400">
-                                    Payment:
-                                  </span>{" "}
-                                  {
-                                    order.paymentMethod
-                                  }
-                                </p>
-                              </div>
-
-                              {/* Small items preview */}
-                              <div className="mt-4">
-                                <p className="text-xs text-zinc-400 mb-2">
-                                  Ordered Items
-                                </p>
-
-                                <div className="space-y-2">
-                                  {order.items
-                                    ?.slice(
-                                      0,
-                                      2
-                                    )
-                                    .map(
-                                      (
-                                        item,
-                                        index
-                                      ) => (
-                                        <div
-                                          key={`${order.id}-${item.name}-${index}`}
-                                          className="flex justify-between text-sm gap-2"
-                                        >
-                                          <span className="text-zinc-300">
-                                            {
-                                              item.name
-                                            }{" "}
-                                            ×{" "}
-                                            {
-                                              item.quantity
-                                            }
-                                          </span>
-
-                                          <span className="font-medium whitespace-nowrap">
-                                            ₹
-                                            {item.price *
-                                              item.quantity}
-                                          </span>
-                                        </div>
-                                      )
-                                    )}
-
-                                  {order.items
-                                    ?.length >
-                                    2 && (
-                                    <p className="text-xs text-zinc-500">
-                                      +
-                                      {order
-                                        .items
-                                        .length -
-                                        2}{" "}
-                                      more item(s)
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-
-                              {/* Bottom */}
-                              <div className="mt-4 pt-4 border-t border-zinc-800">
-                                <div className="flex items-center justify-between mb-3">
-                                  <p className="text-zinc-400 text-sm">
-                                    Total
-                                  </p>
-
-                                  <p className="text-lg font-bold text-orange-400">
-                                    ₹
-                                    {
-                                      order.total
-                                    }
-                                  </p>
-                                </div>
-
-                                <div className="flex flex-col gap-2">
-                                  <button
-                                    onClick={() =>
-                                      setSelectedOrder(
-                                        order
-                                      )
-                                    }
-                                    className="
-                                      w-full
-                                      bg-zinc-800
-                                      hover:bg-zinc-700
-                                      px-4
-                                      py-2
-                                      rounded-xl
-                                      font-medium
-                                    "
-                                  >
-                                    View Details
-                                  </button>
-
-                                  {nextAction && (
-                                    <button
-                                      onClick={() =>
-                                        handleStatusChange(
-                                          order.id,
-                                          nextAction.nextStatus
-                                        )
-                                      }
-                                      disabled={
-                                        updatingId ===
-                                        order.id
-                                      }
-                                      className={`${nextAction.className} px-4 py-2 rounded-xl font-medium disabled:opacity-60`}
-                                    >
-                                      {updatingId ===
-                                      order.id
-                                        ? "Updating..."
-                                        : nextAction.label}
-                                    </button>
-                                  )}
-
-                                  {order.status !==
-                                    "delivered" &&
-                                    order.status !==
-                                      "cancelled" && (
-                                      <button
-                                        onClick={() =>
-                                          handleStatusChange(
-                                            order.id,
-                                            "cancelled"
-                                          )
-                                        }
-                                        disabled={
-                                          updatingId ===
-                                          order.id
-                                        }
-                                        className="bg-red-500 px-4 py-2 rounded-xl font-medium disabled:opacity-60"
-                                      >
-                                        Cancel Order
-                                      </button>
-                                    )}
-                                </div>
-                              </div>
-                            </div>
-                          );
+                    <div className="mt-4 flex gap-3 flex-wrap">
+                      <button
+                        onClick={() =>
+                          setSelectedOrder(
+                            order
+                          )
                         }
+                        className="bg-zinc-800 px-4 py-2 rounded-xl"
+                      >
+                        View Details
+                      </button>
+
+                      {nextAction && (
+                        <button
+                          onClick={() =>
+                            handleStatusChange(
+                              order.id,
+                              nextAction.nextStatus
+                            )
+                          }
+                          className={`${nextAction.className} px-4 py-2 rounded-xl`}
+                        >
+                          {nextAction.label}
+                        </button>
                       )}
                     </div>
                   </div>
@@ -943,32 +782,32 @@ const handleOpenLocation = (
               </div>
 
               {/* Address */}
-         {/* Delivery Address */}
-{/* Delivery Address */}
-<div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-  <h3 className="text-lg font-bold mb-3">
-    Delivery Address
-  </h3>
+              {/* Delivery Address */}
+              {/* Delivery Address */}
+              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+                <h3 className="text-lg font-bold mb-3">
+                  Delivery Address
+                </h3>
 
-  <p className="text-zinc-300 leading-7">
-    {selectedOrder.address}
-  </p>
+                <p className="text-zinc-300 leading-7">
+                  {selectedOrder.address}
+                </p>
 
-  {(selectedOrder.latitude &&
-    selectedOrder.longitude) && (
-    <p className="text-sm text-green-400 mt-3">
-      Exact customer location available
-    </p>
-  )}
+                {(selectedOrder.latitude &&
+                  selectedOrder.longitude) && (
+                    <p className="text-sm text-green-400 mt-3">
+                      Exact customer location available
+                    </p>
+                  )}
 
-  <div className="mt-5 grid sm:grid-cols-3 gap-3">
-    <button
-      onClick={() =>
-        handleCallCustomer(
-          selectedOrder.phone
-        )
-      }
-      className="
+                <div className="mt-5 grid sm:grid-cols-3 gap-3">
+                  <button
+                    onClick={() =>
+                      handleCallCustomer(
+                        selectedOrder.phone
+                      )
+                    }
+                    className="
         bg-green-500
         hover:bg-green-600
         px-4
@@ -976,19 +815,19 @@ const handleOpenLocation = (
         rounded-xl
         font-medium
       "
-    >
-      Call Customer
-    </button>
+                  >
+                    Call Customer
+                  </button>
 
-    <button
-      onClick={() =>
-        handleOpenLocation(
-          selectedOrder.latitude,
-          selectedOrder.longitude,
-          selectedOrder.address
-        )
-      }
-      className="
+                  <button
+                    onClick={() =>
+                      handleOpenLocation(
+                        selectedOrder.latitude,
+                        selectedOrder.longitude,
+                        selectedOrder.address
+                      )
+                    }
+                    className="
         bg-blue-500
         hover:bg-blue-600
         px-4
@@ -996,17 +835,17 @@ const handleOpenLocation = (
         rounded-xl
         font-medium
       "
-    >
-      Open Location
-    </button>
+                  >
+                    Open Location
+                  </button>
 
-    <button
-      onClick={() =>
-        handleCopyAddress(
-          selectedOrder.address
-        )
-      }
-      className="
+                  <button
+                    onClick={() =>
+                      handleCopyAddress(
+                        selectedOrder.address
+                      )
+                    }
+                    className="
         bg-zinc-800
         hover:bg-zinc-700
         px-4
@@ -1014,11 +853,11 @@ const handleOpenLocation = (
         rounded-xl
         font-medium
       "
-    >
-      Copy Address
-    </button>
-  </div>
-</div>
+                  >
+                    Copy Address
+                  </button>
+                </div>
+              </div>
 
               {/* Items */}
               <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
