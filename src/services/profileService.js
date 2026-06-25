@@ -1,5 +1,4 @@
 import { db } from "@/firebase/firebase";
-
 import {
   doc,
   getDoc,
@@ -8,58 +7,36 @@ import {
 
 export const getUserProfile =
   async (userId) => {
-
     try {
-
       const snapshot =
         await getDoc(
-          doc(
-            db,
-            "users",
-            userId
-          )
+          doc(db, "users", userId)
         );
 
       if (!snapshot.exists()) {
-
         return {
-          success: false,
+          success: true,
+          profile: null,
         };
-
       }
 
       return {
         success: true,
-        profile:
-          snapshot.data(),
+        profile: snapshot.data(),
       };
-
     } catch (error) {
-
       return {
         success: false,
-        error:
-          error.message,
+        error: error.message,
       };
-
     }
-
   };
 
 export const saveUserProfile =
-  async (
-    userId,
-    data
-  ) => {
-
+  async (userId, data) => {
     try {
-
       await setDoc(
-        doc(
-          db,
-          "users",
-          userId
-        ),
+        doc(db, "users", userId),
         data,
         {
           merge: true,
@@ -69,15 +46,10 @@ export const saveUserProfile =
       return {
         success: true,
       };
-
     } catch (error) {
-
       return {
         success: false,
-        error:
-          error.message,
+        error: error.message,
       };
-
     }
-
   };
