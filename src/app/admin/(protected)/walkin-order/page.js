@@ -24,9 +24,9 @@ export default function WalkInOrderPage() {
   const [paymentMethod,
     setPaymentMethod] =
     useState("cash");
-const [menuItems,
-  setMenuItems] =
-  useState([]);
+  const [menuItems,
+    setMenuItems] =
+    useState([]);
 
   const [items,
     setItems] =
@@ -43,32 +43,32 @@ const [menuItems,
       (sum, item) =>
         sum +
         Number(item.price || 0) *
-          Number(item.quantity || 0),
+        Number(item.quantity || 0),
       0
     );
-    useEffect(() => {
+  useEffect(() => {
 
-  loadMenu();
+    const loadMenu =
+      async () => {
 
-}, []);
+        const result =
+          await getAllMenuItems();
 
-const loadMenu =
-  async () => {
+        if (
+          result.success
+        ) {
 
-  const result =
-    await getAllMenuItems();
+          setMenuItems(
+            result.data
+          );
 
-  if (
-    result.success
-  ) {
+        }
 
-    setMenuItems(
-      result.data
-    );
+      };
+    loadMenu();
 
-  }
+  }, []);
 
-};
 
   const addItem =
     () => {
@@ -83,26 +83,26 @@ const loadMenu =
       ]);
 
     };
-    useEffect(() => {
+  useEffect(() => {
 
-  loadOrderNumber();
+    const loadOrderNumber =
+      async () => {
 
-}, []);
+        const number =
+          await getNextOrderNumber();
 
-const loadOrderNumber =
-  async () => {
+        setOrderNumber(
+          number
+        );
 
-  const number =
-    await getNextOrderNumber();
+      };
+    loadOrderNumber();
 
-  setOrderNumber(
-    number
-  );
+  }, []);
 
-};
-const [searchTerm,
-  setSearchTerm] =
-  useState("");
+  const [searchTerm,
+    setSearchTerm] =
+    useState("");
   const updateItem =
     (
       index,
@@ -207,273 +207,426 @@ const [searchTerm,
 
     };
 
+  //   return (
+
+
+  //     <div className="min-h-screen bg-zinc-900 text-white p-8">
+
+  //       <h1 className="text-4xl font-bold mb-8">
+  //         Walk-In Order
+  //       </h1>
+
+  //       <div className="max-w-4xl space-y-6">
+
+  //         <input
+  //   type="text"
+  //   value={orderNumber}
+  //   readOnly
+  //   className="
+  //   w-full
+  //   p-3
+  //   rounded-lg
+  //   bg-zinc-700
+  //   "
+  // />
+
+  //         <div className="space-y-4">
+
+  //           {items.map(
+  //             (
+  //               item,
+  //               index
+  //             ) => (
+
+  //               <div
+  //                 key={index}
+  //                 className="
+  //                 flex
+  //                 gap-4
+  //                 items-center
+  //                 "
+  //               >
+  // <div className="relative flex-1">
+
+  //   <input
+  //     type="text"
+  //     placeholder="Search Item"
+  //     value={item.name}
+  //     onChange={(e) => {
+
+  //       const updated =
+  //         [...items];
+
+  //       updated[index].name =
+  //         e.target.value;
+
+  //       setItems(
+  //         updated
+  //       );
+
+  //     }}
+  //     className="
+  //     w-full
+  //     p-3
+  //     rounded-lg
+  //     bg-zinc-800
+  //     "
+  //   />
+
+  //   {item.name && (
+
+  //     <div
+  //       className="
+  //       absolute
+  //       top-full
+  //       left-0
+  //       right-0
+  //       bg-zinc-800
+  //       border
+  //       border-zinc-700
+  //       max-h-60
+  //       overflow-y-auto
+  //       z-50
+  //       "
+  //     >
+
+  //       {menuItems
+  //         .filter(
+  //           (menuItem) =>
+  //             menuItem.name
+  //               .toLowerCase()
+  //               .includes(
+  //                 item.name.toLowerCase()
+  //               )
+  //         )
+  //         .map(
+  //           (menuItem) => (
+
+  //             <div
+  //               key={menuItem.id}
+  //               onClick={() => {
+
+  //                 const updated =
+  //                   [...items];
+
+  //                 updated[index] = {
+
+  //                   ...updated[index],
+
+  //                   name:
+  //                     menuItem.name,
+
+  //                   price:
+  //                     menuItem.price,
+
+  //                 };
+
+  //                 setItems(
+  //                   updated
+  //                 );
+
+  //               }}
+  //               className="
+  //               p-3
+  //               cursor-pointer
+  //               hover:bg-zinc-700
+  //               "
+  //             >
+
+  //               {menuItem.name}
+
+  //             </div>
+
+  //           )
+  //         )}
+
+  //     </div>
+
+  //   )}
+
+  // </div>
+
+  //                <input
+  //   type="number"
+  //   value={item.price}
+  //   readOnly
+  //   className="
+  //   w-32
+  //   p-3
+  //   rounded-lg
+  //   bg-zinc-700
+  //   "
+  // />
+
+  //                 <input
+  //                   type="number"
+  //                   placeholder="Qty"
+  //                   value={item.quantity}
+  //                   onChange={(e) =>
+  //   updateItem(
+  //     index,
+  //     "quantity",
+  //     Math.max(
+  //       1,
+  //       Number(
+  //         e.target.value
+  //       )
+  //     )
+  //   )
+  // }
+  //                   className="
+  //                   w-24
+  //                   p-3
+  //                   rounded-lg
+  //                   bg-zinc-800
+  //                   "
+  //                 />
+
+  //                 <button
+  //                   onClick={() =>
+  //                     removeItem(
+  //                       index
+  //                     )
+  //                   }
+  //                   className="
+  //                   bg-red-500
+  //                   px-4
+  //                   py-3
+  //                   rounded-lg
+  //                   "
+  //                 >
+  //                   X
+  //                 </button>
+
+  //               </div>
+
+  //             )
+  //           )}
+
+  //         </div>
+
+  //         <button
+  //           onClick={addItem}
+  //           className="
+  //           bg-blue-500
+  //           hover:bg-blue-600
+  //           px-6
+  //           py-3
+  //           rounded-lg
+  //           "
+  //         >
+  //           + Add Item
+  //         </button>
+
+  //         <div
+  //           className="
+  //           text-2xl
+  //           font-bold
+  //           "
+  //         >
+  //           Total : ₹{total}
+  //         </div>
+
+  //         <select
+  //           value={paymentMethod}
+  //           onChange={(e) =>
+  //             setPaymentMethod(
+  //               e.target.value
+  //             )
+  //           }
+  //           className="
+  //           w-full
+  //           p-3
+  //           rounded-lg
+  //           bg-zinc-800
+  //           "
+  //         >
+
+  //           <option value="cash">
+  //             Cash
+  //           </option>
+
+  //           <option value="upi">
+  //             UPI
+  //           </option>
+
+  //           <option value="card">
+  //             Card
+  //           </option>
+
+  //         </select>
+
+  //         <button
+  //           onClick={
+  //             handleSaveOrder
+  //           }
+  //           className="
+  //           bg-orange-500
+  //           hover:bg-orange-600
+  //           px-6
+  //           py-3
+  //           rounded-lg
+  //           "
+  //         >
+  //           Save Order
+  //         </button>
+
+  //       </div>
+
+  //     </div>
+
+  //   );
+
   return (
+    <div className="min-h-screen bg-zinc-900 text-white p-4 sm:p-6 lg:p-8">
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6">
+          Walk-In Order
+        </h1>
 
-    <div className="min-h-screen bg-zinc-900 text-white p-8">
+        <div className="space-y-6">
+          <input
+            type="text"
+            value={orderNumber}
+            readOnly
+            className="w-full p-3 rounded-lg bg-zinc-700"
+          />
 
-      <h1 className="text-4xl font-bold mb-8">
-        Walk-In Order
-      </h1>
-
-      <div className="max-w-4xl space-y-6">
-
-        <input
-  type="text"
-  value={orderNumber}
-  readOnly
-  className="
-  w-full
-  p-3
-  rounded-lg
-  bg-zinc-700
-  "
-/>
-
-        <div className="space-y-4">
-
-          {items.map(
-            (
-              item,
-              index
-            ) => (
-
+          <div className="space-y-4">
+            {items.map((item, index) => (
               <div
                 key={index}
-                className="
-                flex
-                gap-4
-                items-center
-                "
+                className="bg-zinc-800 border border-zinc-700 rounded-xl p-4 space-y-4"
               >
-<div className="relative flex-1">
+                {/* Search */}
+                <div className="relative">
+                  <label className="text-sm text-zinc-400 mb-2 block">
+                    Item
+                  </label>
 
-  <input
-    type="text"
-    placeholder="Search Item"
-    value={item.name}
-    onChange={(e) => {
+                  <input
+                    type="text"
+                    placeholder="Search Item..."
+                    value={item.name}
+                    onChange={(e) => {
+                      const updated = [...items];
+                      updated[index].name = e.target.value;
+                      setItems(updated);
+                    }}
+                    className="w-full p-3 rounded-lg bg-zinc-900 border border-zinc-700"
+                  />
 
-      const updated =
-        [...items];
+                  {item.name && (
+                    <div className="absolute left-0 right-0 top-full mt-1 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl max-h-56 overflow-y-auto z-50">
+                      {menuItems
+                        .filter((menuItem) =>
+                          menuItem.name
+                            .toLowerCase()
+                            .includes(item.name.toLowerCase())
+                        )
+                        .map((menuItem) => (
+                          <div
+                            key={menuItem.id}
+                            onClick={() => {
+                              const updated = [...items];
 
-      updated[index].name =
-        e.target.value;
+                              updated[index] = {
+                                ...updated[index],
+                                name: menuItem.name,
+                                price: menuItem.price,
+                              };
 
-      setItems(
-        updated
-      );
+                              setItems(updated);
+                            }}
+                            className="p-3 hover:bg-zinc-700 cursor-pointer"
+                          >
+                            <div className="flex justify-between">
+                              <span>{menuItem.name}</span>
+                              <span>₹{menuItem.price}</span>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
 
-    }}
-    className="
-    w-full
-    p-3
-    rounded-lg
-    bg-zinc-800
-    "
-  />
+                {/* Price + Quantity */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-zinc-400 mb-2 block">
+                      Price
+                    </label>
 
-  {item.name && (
+                    <input
+                      type="number"
+                      value={item.price}
+                      readOnly
+                      className="w-full p-3 rounded-lg bg-zinc-700 text-center"
+                    />
+                  </div>
 
-    <div
-      className="
-      absolute
-      top-full
-      left-0
-      right-0
-      bg-zinc-800
-      border
-      border-zinc-700
-      max-h-60
-      overflow-y-auto
-      z-50
-      "
-    >
+                  <div>
+                    <label className="text-sm text-zinc-400 mb-2 block">
+                      Quantity
+                    </label>
 
-      {menuItems
-        .filter(
-          (menuItem) =>
-            menuItem.name
-              .toLowerCase()
-              .includes(
-                item.name.toLowerCase()
-              )
-        )
-        .map(
-          (menuItem) => (
+                    <input
+                      type="number"
+                      value={item.quantity}
+                      min={1}
+                      onChange={(e) =>
+                        updateItem(
+                          index,
+                          "quantity",
+                          Math.max(1, Number(e.target.value))
+                        )
+                      }
+                      className="w-full p-3 rounded-lg bg-zinc-900 border border-zinc-700 text-center"
+                    />
+                  </div>
+                </div>
 
-            <div
-              key={menuItem.id}
-              onClick={() => {
-
-                const updated =
-                  [...items];
-
-                updated[index] = {
-
-                  ...updated[index],
-
-                  name:
-                    menuItem.name,
-
-                  price:
-                    menuItem.price,
-
-                };
-
-                setItems(
-                  updated
-                );
-
-              }}
-              className="
-              p-3
-              cursor-pointer
-              hover:bg-zinc-700
-              "
-            >
-
-              {menuItem.name}
-
-            </div>
-
-          )
-        )}
-
-    </div>
-
-  )}
-
-</div>
-
-               <input
-  type="number"
-  value={item.price}
-  readOnly
-  className="
-  w-32
-  p-3
-  rounded-lg
-  bg-zinc-700
-  "
-/>
-
-                <input
-                  type="number"
-                  placeholder="Qty"
-                  value={item.quantity}
-                  onChange={(e) =>
-  updateItem(
-    index,
-    "quantity",
-    Math.max(
-      1,
-      Number(
-        e.target.value
-      )
-    )
-  )
-}
-                  className="
-                  w-24
-                  p-3
-                  rounded-lg
-                  bg-zinc-800
-                  "
-                />
-
+                {/* Remove */}
                 <button
-                  onClick={() =>
-                    removeItem(
-                      index
-                    )
-                  }
-                  className="
-                  bg-red-500
-                  px-4
-                  py-3
-                  rounded-lg
-                  "
+                  onClick={() => removeItem(index)}
+                  className="w-full bg-red-500 hover:bg-red-600 transition rounded-lg py-3 font-semibold"
                 >
-                  X
+                  Remove Item
                 </button>
-
               </div>
+            ))}
+          </div>
 
-            )
-          )}
+          <button
+            onClick={addItem}
+            className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg font-semibold transition"
+          >
+            + Add Item
+          </button>
 
+          <div className="text-right text-xl sm:text-2xl font-bold">
+            Total : ₹{total}
+          </div>
+
+          <select
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+            className="w-full p-3 rounded-lg bg-zinc-800 border border-zinc-700"
+          >
+            <option value="cash">Cash</option>
+            <option value="upi">UPI</option>
+            <option value="card">Card</option>
+          </select>
+
+          <button
+            onClick={handleSaveOrder}
+            className="w-full bg-orange-500 hover:bg-orange-600 py-3 rounded-lg font-semibold text-lg transition"
+          >
+            Save Order
+          </button>
         </div>
-
-        <button
-          onClick={addItem}
-          className="
-          bg-blue-500
-          hover:bg-blue-600
-          px-6
-          py-3
-          rounded-lg
-          "
-        >
-          + Add Item
-        </button>
-
-        <div
-          className="
-          text-2xl
-          font-bold
-          "
-        >
-          Total : ₹{total}
-        </div>
-
-        <select
-          value={paymentMethod}
-          onChange={(e) =>
-            setPaymentMethod(
-              e.target.value
-            )
-          }
-          className="
-          w-full
-          p-3
-          rounded-lg
-          bg-zinc-800
-          "
-        >
-
-          <option value="cash">
-            Cash
-          </option>
-
-          <option value="upi">
-            UPI
-          </option>
-
-          <option value="card">
-            Card
-          </option>
-
-        </select>
-
-        <button
-          onClick={
-            handleSaveOrder
-          }
-          className="
-          bg-orange-500
-          hover:bg-orange-600
-          px-6
-          py-3
-          rounded-lg
-          "
-        >
-          Save Order
-        </button>
-
       </div>
-
     </div>
-
   );
 
 }

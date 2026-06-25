@@ -48,11 +48,27 @@ export default function AdminLayout({
     return null;
   }
 
+  // return (
+  //   <div className="flex min-h-screen bg-black text-white">
+  //     <AdminOrderAlert />
+  //     <AdminSidebar />
+  //     <div className="flex-1 flex flex-col lg:ml-0">
+  //       <AdminTopbar />
+
+  //       <main className="flex-1 overflow-y-auto bg-[#050505]">
+  //         {children}
+  //       </main>
+  //     </div>
+  //   </div>
+  // );
+
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white">
       <AdminOrderAlert />
+
       <AdminSidebar />
-      <div className="flex-1 flex flex-col lg:ml-0">
+
+      <div className="flex flex-col min-h-screen lg:ml-64">
         <AdminTopbar />
 
         <main className="flex-1 overflow-y-auto bg-[#050505]">
