@@ -428,12 +428,10 @@ export default function AdminSidebar() {
                                 </Link>
                             );
                         })}
-                    </div>
-
-                    {/* Logout */}
-                    <div className="pt-4 border-t border-zinc-800 shrink-0">
-                        <button
-                            className="
+                        {/* Logout */}
+                        <div className="pt-4 border-t border-zinc-800 shrink-0">
+                            <button
+                                className="
               w-full
               flex
               items-center
@@ -444,12 +442,14 @@ export default function AdminSidebar() {
               hover:bg-red-500
               transition
             "
-                        >
-                            <LogOut size={20} />
+                            >
+                                <LogOut size={20} />
 
-                            Logout
-                        </button>
+                                Logout
+                            </button>
+                        </div>
                     </div>
+
                 </div>
             </aside>
         </>
