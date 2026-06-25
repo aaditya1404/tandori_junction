@@ -35,6 +35,7 @@ export default function WalkInOrderPage() {
         name: "",
         price: 0,
         quantity: 1,
+        showSuggestions: false,
       },
     ]);
 
@@ -79,6 +80,7 @@ export default function WalkInOrderPage() {
           name: "",
           price: 0,
           quantity: 1,
+          showSuggestions: false,
         },
       ]);
 
@@ -198,6 +200,7 @@ export default function WalkInOrderPage() {
           name: "",
           price: 0,
           quantity: 1,
+          showSuggestions: false,
         },
       ]);
 
@@ -206,276 +209,6 @@ export default function WalkInOrderPage() {
       );
 
     };
-
-  //   return (
-
-
-  //     <div className="min-h-screen bg-zinc-900 text-white p-8">
-
-  //       <h1 className="text-4xl font-bold mb-8">
-  //         Walk-In Order
-  //       </h1>
-
-  //       <div className="max-w-4xl space-y-6">
-
-  //         <input
-  //   type="text"
-  //   value={orderNumber}
-  //   readOnly
-  //   className="
-  //   w-full
-  //   p-3
-  //   rounded-lg
-  //   bg-zinc-700
-  //   "
-  // />
-
-  //         <div className="space-y-4">
-
-  //           {items.map(
-  //             (
-  //               item,
-  //               index
-  //             ) => (
-
-  //               <div
-  //                 key={index}
-  //                 className="
-  //                 flex
-  //                 gap-4
-  //                 items-center
-  //                 "
-  //               >
-  // <div className="relative flex-1">
-
-  //   <input
-  //     type="text"
-  //     placeholder="Search Item"
-  //     value={item.name}
-  //     onChange={(e) => {
-
-  //       const updated =
-  //         [...items];
-
-  //       updated[index].name =
-  //         e.target.value;
-
-  //       setItems(
-  //         updated
-  //       );
-
-  //     }}
-  //     className="
-  //     w-full
-  //     p-3
-  //     rounded-lg
-  //     bg-zinc-800
-  //     "
-  //   />
-
-  //   {item.name && (
-
-  //     <div
-  //       className="
-  //       absolute
-  //       top-full
-  //       left-0
-  //       right-0
-  //       bg-zinc-800
-  //       border
-  //       border-zinc-700
-  //       max-h-60
-  //       overflow-y-auto
-  //       z-50
-  //       "
-  //     >
-
-  //       {menuItems
-  //         .filter(
-  //           (menuItem) =>
-  //             menuItem.name
-  //               .toLowerCase()
-  //               .includes(
-  //                 item.name.toLowerCase()
-  //               )
-  //         )
-  //         .map(
-  //           (menuItem) => (
-
-  //             <div
-  //               key={menuItem.id}
-  //               onClick={() => {
-
-  //                 const updated =
-  //                   [...items];
-
-  //                 updated[index] = {
-
-  //                   ...updated[index],
-
-  //                   name:
-  //                     menuItem.name,
-
-  //                   price:
-  //                     menuItem.price,
-
-  //                 };
-
-  //                 setItems(
-  //                   updated
-  //                 );
-
-  //               }}
-  //               className="
-  //               p-3
-  //               cursor-pointer
-  //               hover:bg-zinc-700
-  //               "
-  //             >
-
-  //               {menuItem.name}
-
-  //             </div>
-
-  //           )
-  //         )}
-
-  //     </div>
-
-  //   )}
-
-  // </div>
-
-  //                <input
-  //   type="number"
-  //   value={item.price}
-  //   readOnly
-  //   className="
-  //   w-32
-  //   p-3
-  //   rounded-lg
-  //   bg-zinc-700
-  //   "
-  // />
-
-  //                 <input
-  //                   type="number"
-  //                   placeholder="Qty"
-  //                   value={item.quantity}
-  //                   onChange={(e) =>
-  //   updateItem(
-  //     index,
-  //     "quantity",
-  //     Math.max(
-  //       1,
-  //       Number(
-  //         e.target.value
-  //       )
-  //     )
-  //   )
-  // }
-  //                   className="
-  //                   w-24
-  //                   p-3
-  //                   rounded-lg
-  //                   bg-zinc-800
-  //                   "
-  //                 />
-
-  //                 <button
-  //                   onClick={() =>
-  //                     removeItem(
-  //                       index
-  //                     )
-  //                   }
-  //                   className="
-  //                   bg-red-500
-  //                   px-4
-  //                   py-3
-  //                   rounded-lg
-  //                   "
-  //                 >
-  //                   X
-  //                 </button>
-
-  //               </div>
-
-  //             )
-  //           )}
-
-  //         </div>
-
-  //         <button
-  //           onClick={addItem}
-  //           className="
-  //           bg-blue-500
-  //           hover:bg-blue-600
-  //           px-6
-  //           py-3
-  //           rounded-lg
-  //           "
-  //         >
-  //           + Add Item
-  //         </button>
-
-  //         <div
-  //           className="
-  //           text-2xl
-  //           font-bold
-  //           "
-  //         >
-  //           Total : ₹{total}
-  //         </div>
-
-  //         <select
-  //           value={paymentMethod}
-  //           onChange={(e) =>
-  //             setPaymentMethod(
-  //               e.target.value
-  //             )
-  //           }
-  //           className="
-  //           w-full
-  //           p-3
-  //           rounded-lg
-  //           bg-zinc-800
-  //           "
-  //         >
-
-  //           <option value="cash">
-  //             Cash
-  //           </option>
-
-  //           <option value="upi">
-  //             UPI
-  //           </option>
-
-  //           <option value="card">
-  //             Card
-  //           </option>
-
-  //         </select>
-
-  //         <button
-  //           onClick={
-  //             handleSaveOrder
-  //           }
-  //           className="
-  //           bg-orange-500
-  //           hover:bg-orange-600
-  //           px-6
-  //           py-3
-  //           rounded-lg
-  //           "
-  //         >
-  //           Save Order
-  //         </button>
-
-  //       </div>
-
-  //     </div>
-
-  //   );
 
   return (
     <div className="min-h-screen bg-zinc-900 text-white p-4 sm:p-6 lg:p-8">
@@ -511,12 +244,13 @@ export default function WalkInOrderPage() {
                     onChange={(e) => {
                       const updated = [...items];
                       updated[index].name = e.target.value;
+                      updated[index].showSuggestions = true;
                       setItems(updated);
                     }}
                     className="w-full p-3 rounded-lg bg-zinc-900 border border-zinc-700"
                   />
 
-                  {item.name && (
+                  {item.showSuggestions && item.name && (
                     <div className="absolute left-0 right-0 top-full mt-1 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl max-h-56 overflow-y-auto z-50">
                       {menuItems
                         .filter((menuItem) =>
@@ -534,6 +268,7 @@ export default function WalkInOrderPage() {
                                 ...updated[index],
                                 name: menuItem.name,
                                 price: menuItem.price,
+                                showSuggestions: false,
                               };
 
                               setItems(updated);
@@ -570,7 +305,7 @@ export default function WalkInOrderPage() {
                       Quantity
                     </label>
 
-                    <input
+                    {/* <input
                       type="number"
                       value={item.quantity}
                       min={1}
@@ -581,6 +316,26 @@ export default function WalkInOrderPage() {
                           Math.max(1, Number(e.target.value))
                         )
                       }
+                      className="w-full p-3 rounded-lg bg-zinc-900 border border-zinc-700 text-center appearance-none"
+                    /> */}
+                    <input
+                      type="number"
+                      value={item.quantity}
+                      min={1}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        updateItem(
+                          index,
+                          "quantity",
+                          value === "" ? "" : Number(value)
+                        );
+                      }}
+                      onBlur={() => {
+                        if (item.quantity === "" || item.quantity < 1) {
+                          updateItem(index, "quantity", 1);
+                        }
+                      }}
                       className="w-full p-3 rounded-lg bg-zinc-900 border border-zinc-700 text-center"
                     />
                   </div>
